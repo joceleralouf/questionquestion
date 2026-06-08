@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révision Trophées du Bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fbf7f0;
+    --ink:#26201b;
+    --ink-soft:#7a6f63;
+    --card:#ffffff;
+    --line:#ece2d4;
+    --orange:#ef7d34;
+    --orange-d:#d4641d;
+    --lime:#3fa06a;
+    --campari:#cf2f3f;
+    --gold:#e3a52a;
+    --or:#c98a17;          /* accent lisible utilise inline par le JS */
+    --blue:#3f78c4;
+    --plum:#9a4ea3;
+    --shadow:rgba(38,32,27,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(circle at 10% -6%, rgba(239,125,52,.14), transparent 40%),
+      radial-gradient(circle at 92% 6%, rgba(63,160,106,.13), transparent 38%),
+      radial-gradient(circle at 75% 102%, rgba(227,165,42,.12), transparent 42%),
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:'Hanken Grotesk',system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    min-height:100vh;
+    padding:0 0 70px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px;position:relative}
+
+  /* ENTETE */
+  header{text-align:center;padding:52px 0 24px}
+  .kicker{font-family:'Hanken Grotesk',sans-serif;font-weight:700;letter-spacing:.26em;font-size:12px;color:var(--orange-d);text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(38px,7vw,66px);line-height:1.02;color:var(--ink);letter-spacing:-.01em}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:clamp(15px,2.6vw,20px);color:var(--ink-soft);margin-top:14px}
+  .glasses{display:flex;align-items:flex-end;justify-content:center;gap:22px;margin-top:26px}
+  .glasses svg{width:38px;height:46px;display:block}
+  .g1{color:var(--orange)}.g2{color:var(--campari)}.g3{color:var(--lime)}.g4{color:var(--gold)}
+
+  /* TABS */
+  .tabs{display:flex;justify-content:center;gap:10px;margin:30px 0 30px;flex-wrap:wrap}
+  .tab{
+    font-family:'Hanken Grotesk',sans-serif;font-weight:600;font-size:14px;letter-spacing:.02em;
+    background:var(--card);color:var(--ink-soft);border:1.5px solid var(--line);
+    padding:12px 28px;cursor:pointer;transition:.2s;border-radius:100px;box-shadow:0 2px 8px var(--shadow);
+  }
+  .tab:hover{color:var(--ink);border-color:var(--orange);transform:translateY(-1px)}
+  .tab.on{background:linear-gradient(180deg,var(--orange),var(--orange-d));color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(212,100,29,.34)}
+
+  .view{display:none;animation:fade .4s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* FICHE */
+  .intro{text-align:center;color:var(--ink-soft);font-family:'Fraunces',serif;font-style:italic;font-size:18px;max-width:600px;margin:0 auto 28px}
+  .acc{border:1.5px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden;background:var(--card);box-shadow:0 4px 16px var(--shadow);transition:.2s}
+  .acc:hover{box-shadow:0 8px 24px var(--shadow)}
+  .acc-head{
+    display:flex;align-items:center;gap:16px;width:100%;text-align:left;cursor:pointer;
+    background:transparent;border:none;color:var(--ink);padding:18px 20px;font-family:inherit;
+  }
+  .acc-num{
+    font-family:'Fraunces',serif;font-weight:700;color:#fff;font-size:16px;
+    min-width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+    background:var(--orange);box-shadow:0 3px 8px rgba(212,100,29,.3);flex-shrink:0;
+  }
+  #acc-list .acc:nth-child(5n+1) .acc-num{background:var(--orange);box-shadow:0 3px 8px rgba(239,125,52,.32)}
+  #acc-list .acc:nth-child(5n+2) .acc-num{background:var(--lime);box-shadow:0 3px 8px rgba(63,160,106,.32)}
+  #acc-list .acc:nth-child(5n+3) .acc-num{background:var(--campari);box-shadow:0 3px 8px rgba(207,47,63,.3)}
+  #acc-list .acc:nth-child(5n+4) .acc-num{background:var(--blue);box-shadow:0 3px 8px rgba(63,120,196,.3)}
+  #acc-list .acc:nth-child(5n+5) .acc-num{background:var(--plum);box-shadow:0 3px 8px rgba(154,78,163,.3)}
+  .acc-title{flex:1;font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--ink);line-height:1.2}
+  .chev{color:var(--orange-d);transition:transform .3s;font-size:13px}
+  .acc.open .chev{transform:rotate(90deg)}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .45s ease;padding:0 20px}
+  .acc.open .acc-body{max-height:4000px}
+  .acc-inner{padding:4px 0 22px;border-top:1.5px solid var(--line);margin-left:54px}
+  .acc-inner p{margin:14px 0 0}
+  .acc-inner strong{color:var(--orange-d);font-weight:700}
+  .acc-inner .em{color:var(--campari);font-style:italic;font-weight:500}
+  .acc-inner ul{list-style:none;margin:10px 0 0}
+  .acc-inner li{position:relative;padding-left:22px;margin:9px 0}
+  .acc-inner li::before{content:"";position:absolute;left:2px;top:10px;width:7px;height:7px;border-radius:50%;background:var(--orange)}
+  .recipe{background:rgba(239,125,52,.09);border-left:3px solid var(--orange);padding:10px 16px;margin-top:14px;font-size:15px;border-radius:0 10px 10px 0}
+  .recipe b{color:var(--orange-d);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .date{color:var(--orange-d);font-weight:700;background:rgba(239,125,52,.12);padding:1px 8px;border-radius:6px;font-size:15px}
+
+  /* QUIZ */
+  .quiz-card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:30px 28px 26px;box-shadow:0 12px 36px var(--shadow)}
+  .q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .q-cat{font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--orange-d);background:rgba(239,125,52,.13);padding:5px 12px;border-radius:100px}
+  .q-meta span:last-child{font-size:13px;font-weight:600;color:var(--ink-soft)}
+  .bar{height:8px;background:var(--line);border-radius:100px;overflow:hidden;margin-bottom:26px}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold),var(--lime));width:0;transition:width .4s;border-radius:100px}
+  .q-text{font-family:'Fraunces',serif;font-weight:600;font-size:25px;line-height:1.3;color:var(--ink);margin-bottom:24px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{
+    text-align:left;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);
+    padding:14px 16px;font-family:inherit;font-size:16px;cursor:pointer;border-radius:13px;transition:.18s;
+    display:flex;align-items:center;gap:14px;
+  }
+  .opt .letter{
+    font-family:'Fraunces',serif;font-weight:700;color:var(--orange-d);font-size:15px;
+    min-width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:rgba(239,125,52,.13);flex-shrink:0;transition:.18s;
+  }
+  .opt:hover:not(:disabled){border-color:var(--orange);background:#fff;transform:translateX(3px);box-shadow:0 4px 12px var(--shadow)}
+  .opt:disabled{cursor:default}
+  .opt.good{border-color:var(--lime);background:rgba(63,160,106,.12)}
+  .opt.good .letter{background:var(--lime);color:#fff}
+  .opt.bad{border-color:var(--campari);background:rgba(207,47,63,.10)}
+  .opt.bad .letter{background:var(--campari);color:#fff}
+  .explain{margin-top:20px;padding:16px 18px;border-left:3px solid var(--gold);background:rgba(227,165,42,.10);border-radius:0 12px 12px 0;font-size:15px;display:none;animation:fade .3s}
+  .explain.show{display:block}
+  .explain b{color:var(--orange-d);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px}
+  .q-nav{display:flex;justify-content:flex-end;margin-top:22px}
+  .btn{
+    font-family:'Hanken Grotesk',sans-serif;font-weight:700;letter-spacing:.02em;font-size:15px;
+    background:linear-gradient(180deg,var(--orange),var(--orange-d));color:#fff;border:none;padding:14px 30px;cursor:pointer;border-radius:100px;transition:.2s;box-shadow:0 6px 16px rgba(212,100,29,.3);
+  }
+  .btn:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 8px 22px rgba(212,100,29,.4)}
+  .btn.ghost{background:#fff;border:1.5px solid var(--orange);color:var(--orange-d);box-shadow:0 2px 8px var(--shadow)}
+  .btn:disabled{opacity:.4;cursor:default;filter:none;box-shadow:none;transform:none}
+
+  /* RESULT */
+  .result{text-align:center;padding:36px 20px}
+  .score-num{font-family:'Fraunces',serif;font-weight:700;font-size:76px;color:var(--orange-d);line-height:1}
+  .score-num span{font-size:34px;color:var(--ink-soft)}
+  .verdict{font-family:'Fraunces',serif;font-weight:600;font-size:23px;margin:16px 0 8px}
+  .verdict.tier-gold{color:var(--gold)}
+  .verdict.tier-ok{color:var(--lime)}
+  .verdict.tier-low{color:var(--campari)}
+  .result p{color:var(--ink-soft);margin-bottom:26px}
+
+  footer{height:24px}
+  @media(max-width:560px){
+    body{font-size:16px}
+    .q-text{font-size:21px}
+    .quiz-card{padding:22px 18px}
+    .acc-inner{margin-left:0}
+    .glasses{gap:16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Mémo de révision</div>
+    <h1>Le Comptoir du Savoir</h1>
+    <p class="sub">Histoire des cocktails &amp; culture du bar</p>
+    <div class="glasses">
+      <span class="g1"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 8 H33 L20 25 Z"/><line x1="20" y1="25" x2="20" y2="41"/><line x1="11" y1="41" x2="29" y2="41"/></svg></span>
+      <span class="g2"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 9 Q20 27 33 9"/><line x1="20" y1="22" x2="20" y2="41"/><line x1="11" y1="41" x2="29" y2="41"/></svg></span>
+      <span class="g3"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="13" y="5" width="14" height="38" rx="3"/></svg></span>
+      <span class="g4"><svg viewBox="0 0 40 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="19" width="22" height="22" rx="3"/></svg></span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab on" data-view="fiche">La Fiche</button>
+    <button class="tab" data-view="quiz">Le Quiz</button>
+  </nav>
+
+  <!-- ============ FICHE ============ -->
+  <section id="fiche" class="view on">
+    <p class="intro">Huit chapitres, l'essentiel pour un questionnaire de concours. Lis vite, puis passe au quiz pour ancrer en active recall.</p>
+    <div id="acc-list"></div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="quiz" class="view">
+    <div id="quiz-stage"></div>
+  </section>
+
+  <footer></footer>
+</div>
+
+<script>
+/* ============================ DONNEES FICHE ============================ */
+const FICHE = [
+ {t:"Naissance du cocktail",
+  body:`<p>La première définition écrite du mot <strong>cocktail</strong> paraît en <span class="date">1806</span> dans un journal de l'État de New York, <em class="em">The Balance and Columbian Repository</em> : un mélange d'<strong>alcool, sucre, eau et bitters</strong>. Cette formule est exactement celle de l'<strong>Old Fashioned</strong>, considéré comme la structure originelle du cocktail.</p>
+  <ul>
+   <li><strong>Jerry Thomas</strong>, surnommé « The Professor », publie en <span class="date">1862</span> <em class="em">How to Mix Drinks; or, The Bon Vivant's Companion</em> : le premier livre de recettes de cocktails. Il est considéré comme le père de la mixologie américaine.</li>
+   <li>L'âge d'or américain s'étend de la fin du 19e siècle jusqu'à la Prohibition.</li>
+  </ul>`},
+ {t:"La Prohibition et l'exode",
+  body:`<p>Aux États-Unis, le <strong>18e amendement</strong> (Volstead Act) instaure la Prohibition de <span class="date">1920 à 1933</span>. Elle est abrogée par le 21e amendement.</p>
+  <ul>
+   <li>L'alcool circule dans les <strong>speakeasies</strong>, bars clandestins. La qualité douteuse des spiritueux favorise les recettes très aromatiques pour masquer.</li>
+   <li>Les barmen américains émigrent : vers <strong>Cuba</strong> (La Havane devient une capitale du cocktail) et vers l'<strong>Europe</strong>, surtout Londres et Paris.</li>
+   <li><strong>Harry Craddock</strong>, barman au <strong>Savoy de Londres</strong>, publie en <span class="date">1930</span> le <em class="em">Savoy Cocktail Book</em>, bible de l'époque.</li>
+   <li><strong>Harry MacElhone</strong> tient le <strong>Harry's New York Bar</strong> à Paris (5 rue Daunou). Berceau de plusieurs classiques.</li>
+  </ul>`},
+ {t:"Tiki et renaissance moderne",
+  body:`<ul>
+   <li><strong>Tiki</strong> : né dans les années 1930. <strong>Donn Beach</strong> (Don the Beachcomber) ouvre à Hollywood, suivi de <strong>Trader Vic</strong> (Victor Bergeron) à Oakland. Rhums, sirops exotiques, orgeat. Paternité disputée du <strong>Mai Tai</strong> (revendiqué par Trader Vic, 1944) et du <strong>Zombie</strong> (Donn Beach).</li>
+   <li><strong>Renaissance craft</strong> : à partir des années 1980-90, <strong>Dale DeGroff</strong> (« King Cocktail ») réhabilite les jus frais et la rigueur au Rainbow Room de New York.</li>
+   <li><strong>Sasha Petraske</strong> ouvre <strong>Milk &amp; Honey</strong> (New York, 2000) : retour du speakeasy, glace travaillée, exécution précise. Point de départ du mouvement moderne.</li>
+  </ul>`},
+ {t:"Les familles de cocktails",
+  body:`<ul>
+   <li><strong>Old Fashioned</strong> : spiritueux, sucre, bitters, glace. La forme mère.</li>
+   <li><strong>Sour</strong> : spiritueux + agrume + sucre, parfois blanc d'œuf. <em class="em">Whiskey Sour, Daiquiri, Margarita, Sidecar.</em></li>
+   <li><strong>Highball</strong> : spiritueux + long drink gazeux. <em class="em">Gin Tonic, Cuba Libre.</em></li>
+   <li><strong>Collins / Fizz</strong> : un sour allongé au soda. Le Fizz se secoue, le Collins se construit au verre.</li>
+   <li><strong>Julep</strong> : spiritueux + sucre + menthe + glace pilée. <em class="em">Mint Julep au bourbon.</em></li>
+   <li><strong>Smash</strong> : un julep enrichi de fruits.</li>
+   <li><strong>Flip</strong> : spiritueux + œuf entier + sucre.</li>
+   <li><strong>Punch</strong> : ancêtre de tous, du hindi <em class="em">panch</em> (cinq), pour cinq ingrédients.</li>
+   <li><strong>Daisy</strong> : sour avec liqueur et soda. <em class="em">Margarita</em> signifie « marguerite » (daisy) en espagnol.</li>
+   <li><strong>Swizzle, Sling, Cobbler</strong> : familles historiques. Le Sherry Cobbler a popularisé la paille au 19e siècle.</li>
+  </ul>`},
+ {t:"Les grands classiques et leurs origines",
+  body:`<ul>
+   <li><strong>Negroni</strong> : Florence, vers 1919. Le comte <strong>Camillo Negroni</strong> demande de renforcer son Americano au gin. <span class="recipe"><b>Recette</b>1/3 gin, 1/3 Campari, 1/3 vermouth rouge, à parts égales.</span></li>
+   <li><strong>Manhattan</strong> : New York. <span class="recipe"><b>Recette</b>Whiskey (rye), vermouth rouge, Angostura. Au verre à mélange.</span></li>
+   <li><strong>Martini</strong> : gin + vermouth dry, ancêtre probable le Martinez.</li>
+   <li><strong>Daiquiri</strong> : Cuba, attribué à <strong>Jennings Cox</strong>, près de la mine de Daiquirí. Rhum, citron vert, sucre.</li>
+   <li><strong>Mojito</strong> : La Havane, La Bodeguita del Medio. Rhum, citron vert, sucre, menthe, soda.</li>
+   <li><strong>Sazerac</strong> : La Nouvelle-Orléans, souvent cité comme l'un des plus anciens. À l'origine au cognac, puis au rye. <strong>Peychaud's bitters</strong>, rinçage d'absinthe.</li>
+   <li><strong>Margarita</strong> : tequila, triple sec, citron vert. Plusieurs revendications mexicaines et américaines.</li>
+   <li><strong>Bloody Mary</strong> : Harry's New York Bar à Paris, <strong>Fernand Petiot</strong>. Vodka, jus de tomate, épices.</li>
+   <li><strong>French 75</strong> : gin (ou cognac), citron, sucre, champagne. Nommé d'après le canon de 75 mm.</li>
+   <li><strong>Sidecar</strong> : cognac, triple sec, citron. Années 1920, Paris-Londres.</li>
+   <li><strong>Bellini</strong> : <strong>Harry's Bar de Venise</strong>, Giuseppe Cipriani. Prosecco et purée de pêche blanche.</li>
+   <li><strong>Singapore Sling</strong> : <strong>Raffles Hotel</strong>, Singapour, Ngiam Tong Boon, vers 1915.</li>
+   <li><strong>Piña Colada</strong> : Porto Rico, son cocktail national. Rhum, coco, ananas.</li>
+   <li><strong>Caipirinha</strong> : Brésil. Cachaça, citron vert, sucre.</li>
+   <li><strong>Pisco Sour</strong> : Pérou et Chili se le disputent. Pisco, citron vert, sucre, blanc d'œuf, Angostura.</li>
+   <li><strong>Cosmopolitan</strong> : New York, fin des années 1980. Vodka citron, triple sec, cranberry, citron vert.</li>
+  </ul>`},
+ {t:"Les spiritueux : définitions clés",
+  body:`<ul>
+   <li><strong>Gin</strong> : alcool neutre aromatisé, le <strong>genièvre</strong> doit dominer. <em class="em">London Dry</em> = sans ajout de sucre ni arôme après distillation. Minimum 37,5 % vol. dans l'UE.</li>
+   <li><strong>Whisky</strong> : céréales, vieilli sous bois. <strong>Scotch</strong> min. 3 ans ; <strong>Bourbon</strong> min. 51 % maïs, fût de chêne neuf carbonisé, USA ; <strong>Rye</strong> min. 51 % seigle ; <em class="em">single malt</em> = orge maltée, une seule distillerie.</li>
+   <li><strong>Rhum</strong> : de canne. <em class="em">Agricole</em> = jus de canne (AOC Martinique) ; <em class="em">traditionnel</em> = mélasse.</li>
+   <li><strong>Tequila</strong> : <strong>agave bleu Weber</strong>, région de Jalisco. 100 % agave ou mixto (min. 51 %). Mentions : Blanco, Reposado, Añejo, Extra Añejo.</li>
+   <li><strong>Mezcal</strong> : agaves divers, cuisson en four enterré qui donne le <strong>fumé</strong>. Oaxaca surtout.</li>
+   <li><strong>Cognac</strong> : eau-de-vie de vin de la région de Cognac, <strong>double distillation</strong> en alambic charentais, fût de chêne. Comptes d'âge : <strong>VS, VSOP, XO</strong>.</li>
+   <li><strong>Armagnac</strong> : Gascogne, le plus souvent distillation continue.</li>
+   <li><strong>Vermouth</strong> : vin aromatisé à l'<strong>armoise</strong> (wermut). Rouge, blanc, dry. <em class="em">Noilly Prat</em> pour le dry français, <em class="em">Carpano</em> pour l'italien.</li>
+  </ul>`},
+ {t:"Amers, liqueurs et modificateurs",
+  body:`<ul>
+   <li><strong>Bitters</strong> : <strong>Angostura</strong> (Trinidad) et <strong>Peychaud's</strong> (Nouvelle-Orléans) sont les deux références.</li>
+   <li><strong>Amari italiens</strong> : Campari et Aperol (aperitivo), <strong>Fernet-Branca</strong> (digestif très amer, le « shot des barmen »), Averna, Montenegro.</li>
+   <li><strong>Chartreuse</strong> : liqueur des moines chartreux, près de Voiron. <strong>Verte</strong> à 55 %, <strong>Jaune</strong> plus douce, à base de 130 plantes.</li>
+   <li><strong>Triple sec / Curaçao</strong> : <strong>Cointreau</strong>, <strong>Grand Marnier</strong> (à base de cognac), Combier.</li>
+   <li><strong>Vermouths et quinquinas</strong> servent de modificateurs aromatiques et de base aux aperitivi.</li>
+  </ul>`},
+ {t:"Techniques, outils et institutions",
+  body:`<ul>
+   <li><strong>Build</strong> : montage direct au verre.</li>
+   <li><strong>Stir</strong> (mélanger) : au <strong>verre à mélange</strong>, pour les cocktails tout-alcool (Martini, Manhattan, Negroni). Limpidité, dilution maîtrisée.</li>
+   <li><strong>Shake</strong> (frapper) : pour agrumes, sucre, œuf, laitages. Froid, aération, dilution rapide.</li>
+   <li><strong>Dry shake</strong> : sans glace, pour émulsionner le blanc d'œuf, puis on refrappe avec glace.</li>
+   <li><strong>Throwing</strong> : transvasement entre deux récipients pour oxygéner sans trop diluer.</li>
+   <li><strong>Double strain</strong> : double filtration avec passette fine pour retenir glace et pulpe.</li>
+   <li><strong>Outils</strong> : <strong>jigger</strong> (doseur), shaker Boston (2 pièces) ou cobbler (3 pièces), passette <strong>Hawthorne</strong> (à ressort), passette Julep, cuillère à mélange (bar spoon), muddler (pilon).</li>
+   <li><strong>IBA</strong> : International Bartenders Association, fondée en 1951. Classe les cocktails officiels en trois catégories : <em class="em">The Unforgettables, Contemporary Classics, New Era Drinks</em>. Organise le World Cocktail Championship.</li>
+   <li><strong>ABF</strong> : Association des Barmen de France.</li>
+  </ul>`},
+ {t:"Histoires des grands classiques",
+  body:`<p>Anecdotes d'origine, en gardant l'esprit critique : beaucoup sont des légendes embellies par le marketing. Les cas contestés sont signalés.</p>
+  <ul>
+   <li><strong>Martinez &amp; Martini</strong> : le <strong>Martinez</strong> des années 1880 (gin Old Tom, vermouth doux, marasquin, bitters) est l'ancêtre direct du Martini. Avec le temps, le Martini s'assèche : toujours plus de gin, toujours moins de vermouth. <span class="em">Origine du nom débattue.</span></li>
+   <li><strong>Tom Collins</strong> : le nom est popularisé par le <strong>canular de 1874</strong>, où l'on faisait croire aux gens qu'un certain Tom Collins les calomniait au bar voisin. Filiation avec le John Collins du Limmer's Hotel à Londres.</li>
+   <li><strong>Daiquiri &amp; Hemingway</strong> : à La Havane, au bar <strong>El Floridita</strong>, le barman Constantino Ribalaigua perfectionne le Daiquiri. Hemingway y buvait son <strong>Papa Doble</strong> : double dose de rhum, sans sucre, pamplemousse et marasquin.</li>
+   <li><strong>Mojito</strong> : la phrase « mon mojito à La Bodeguita, mon daiquiri à El Floridita » attribuée à Hemingway est <span class="em">probablement apocryphe</span>, mais elle a forgé la légende des deux bars.</li>
+   <li><strong>Moscow Mule</strong> : vers 1941, pour écouler la vodka <strong>Smirnoff</strong> aux États-Unis, on l'associe à de la ginger beer dans un <strong>mug en cuivre</strong>. Ce cocktail marketing a lancé la vodka en Amérique.</li>
+   <li><strong>Cuba Libre</strong> : né à Cuba vers 1900, rhum et <strong>Coca-Cola</strong>, sur le toast « Por Cuba Libre ! » après la guerre hispano-américaine.</li>
+   <li><strong>Gimlet</strong> : gin et cordial de citron vert <strong>Rose's</strong>. Lié à la Royal Navy, qui embarquait du jus de citron vert contre le scorbut. L'attribution au chirurgien Gimlette reste une légende.</li>
+   <li><strong>Espresso Martini</strong> : créé par <strong>Dick Bradsell</strong> à Londres à la fin des années 1980, d'abord nommé « Vodka Espresso », pour une cliente qui voulait être réveillée puis grisée. Vodka, espresso, liqueur de café.</li>
+   <li><strong>Penicillin</strong> : classique moderne de <strong>Sam Ross</strong> (Milk &amp; Honey, 2005). Scotch, miel-gingembre, citron, float de scotch tourbé.</li>
+   <li><strong>Hanky Panky</strong> : créé par <strong>Ada Coleman</strong>, barmaid de l'American Bar du Savoy. Gin, vermouth doux, trait de <strong>Fernet-Branca</strong>.</li>
+   <li><strong>Ramos Gin Fizz</strong> : inventé par Henry Ramos à La Nouvelle-Orléans en 1888. Réputé pour son <strong>shake interminable</strong> (la légende parle d'une chaîne de « shaker boys »). Gin, agrumes, blanc d'œuf, crème, fleur d'oranger, soda.</li>
+   <li><strong>Last Word</strong> : né au Detroit Athletic Club avant la Prohibition, oublié, puis ressuscité à Seattle dans les années 2000. Gin, <strong>Chartreuse verte</strong>, marasquin, citron vert, à parts égales.</li>
+   <li><strong>Negroni Sbagliato</strong> : le Negroni « raté » du Bar Basso à Milan, où le gin est remplacé par du <strong>spumante</strong>.</li>
+  </ul>`},
+ {t:"L'IBA en détail",
+  body:`<p>L'<strong>International Bartenders Association</strong> est l'autorité mondiale de référence de la profession. À connaître par cœur pour un concours.</p>
+  <ul>
+   <li><strong>Fondation</strong> : le <span class="date">24 février 1951</span>, au saloon du <strong>Grand Hotel de Torquay</strong> (Angleterre).</li>
+   <li><strong>7 guildes fondatrices</strong> : Danemark, France, Italie, Pays-Bas, Suède, Suisse, Royaume-Uni. Moyen mnémotechnique : six pays d'Europe continentale plus le Royaume-Uni, hôte.</li>
+   <li><strong>Premier président</strong> : W. J. « Billy » Tarling (Royaume-Uni, UKBG), aussi auteur du <em class="em">Café Royal Cocktail Book</em>. Siège initial à Londres.</li>
+   <li><strong>World Cocktail Championship</strong> (WCC) : compétition annuelle, première édition en <span class="date">1955</span> à Amsterdam, dans un pays différent chaque année. Couplée à la <strong>World Flairtending Competition</strong> (WFC).</li>
+   <li><strong>Membres aujourd'hui</strong> : environ <strong>67 pays</strong> (plus des pays observateurs).</li>
+  </ul>
+  <p style="margin-top:18px"><strong>La liste officielle des cocktails IBA</strong></p>
+  <ul>
+   <li>Initiée par le président <strong>Angelo Zola</strong> en 1960, première version approuvée en <span class="date">1961 à Oslo</span> avec 50 cocktails. Révisée environ tous les dix ans.</li>
+   <li>Depuis la mise à jour de <span class="date">2024</span> : <strong>102 cocktails</strong>, répartis en <strong>3 catégories</strong> d'environ 34 chacune. Les versions antérieures en comptaient 77 puis 89.</li>
+   <li><strong>The Unforgettables</strong> : les classiques intemporels, socle des origines. <em class="em">Old Fashioned, Negroni, Manhattan, Daiquiri, Martini, Alexander, Sazerac, Martinez.</em></li>
+   <li><strong>Contemporary Classics</strong> : modernes solidement installés. <em class="em">Mojito, Cosmopolitan, Margarita.</em></li>
+   <li><strong>New Era Drinks</strong> : créations récentes, revues selon les tendances. <em class="em">Paper Plane, Naked and Famous, Spicy Fifty, Ve.n.to.</em> L'Espresso Martini fait partie des ajouts récents.</li>
+  </ul>`},
+ {t:"Les plus anciens cocktails &amp; les grands noms",
+  body:`<p><strong>Les plus anciens cocktails documentés</strong></p>
+  <ul>
+   <li><strong>Old Fashioned</strong> : sa structure (alcool, sucre, eau, bitters) est la définition même de 1806. Le nom « Old Fashioned » s'impose à la fin du 19e siècle pour réclamer un cocktail « à l'ancienne ».</li>
+   <li><strong>Sazerac</strong> : La Nouvelle-Orléans, milieu du 19e siècle. Souvent présenté comme l'un des plus anciens cocktails américains, d'abord au cognac.</li>
+   <li><strong>Mint Julep</strong> : début du 19e siècle dans le Sud, ancêtre rafraîchissant à base d'alcool, sucre et menthe.</li>
+   <li><strong>Sherry Cobbler</strong> : années 1830-40, immense succès qui a popularisé l'usage de la <strong>paille</strong>.</li>
+   <li><strong>Martinez et Manhattan</strong> : années 1870-80, charnière vers les cocktails au vermouth.</li>
+  </ul>
+  <p style="margin-top:18px"><strong>Les grands noms du bar</strong></p>
+  <ul>
+   <li><strong>Jerry Thomas</strong> (1830-1885) : père de la mixologie américaine, premier livre (1862), inventeur du Blue Blazer flambé.</li>
+   <li><strong>Harry Johnson</strong> : auteur du <em class="em">Bartender's Manual</em> (1882), pionnier de l'organisation et du service au bar.</li>
+   <li><strong>Ada « Coley » Coleman</strong> : barmaid star de l'American Bar du Savoy, créatrice du Hanky Panky, figure féminine majeure.</li>
+   <li><strong>Harry Craddock</strong> : Savoy de Londres, <em class="em">Savoy Cocktail Book</em> (1930).</li>
+   <li><strong>Harry MacElhone</strong> : Harry's New York Bar, Paris. Associé au Sidecar, au White Lady et au Monkey Gland.</li>
+   <li><strong>Constantino Ribalaigua</strong> : « cantinero » d'El Floridita à La Havane, maître du Daiquiri.</li>
+   <li><strong>Donn Beach &amp; Trader Vic</strong> : inventeurs de la culture tiki dans les années 1930.</li>
+   <li><strong>Dale DeGroff</strong> : « King Cocktail », artisan de la renaissance moderne aux États-Unis.</li>
+   <li><strong>Dick Bradsell</strong> : parrain du cocktail britannique moderne, créateur de l'Espresso Martini.</li>
+   <li><strong>Sasha Petraske</strong> : Milk &amp; Honey, retour de l'exigence et du speakeasy.</li>
+   <li><strong>Colin Field</strong> : longtemps chef barman du Bar Hemingway au Ritz Paris, régulièrement cité parmi les meilleurs du monde.</li>
+  </ul>`}
+];
+
+function renderFiche(){
+  const list=document.getElementById('acc-list');
+  list.innerHTML=FICHE.map((s,i)=>`
+   <div class="acc">
+     <button class="acc-head" onclick="this.parentElement.classList.toggle('open')">
+       <span class="acc-num">${String(i+1).padStart(2,'0')}</span>
+       <span class="acc-title">${s.t}</span>
+       <span class="chev">▶</span>
+     </button>
+     <div class="acc-body"><div class="acc-inner">${s.body}</div></div>
+   </div>`).join('');
+}
+
+/* ============================ DONNEES QUIZ ============================ */
+const QUESTIONS=[
+ {c:"Histoire",q:"En quelle année paraît la première définition écrite du mot « cocktail » ?",o:["1762","1806","1862","1920"],a:1,e:"1806, dans le journal The Balance and Columbian Repository, État de New York."},
+ {c:"Histoire",q:"Que contient la définition originelle du cocktail de 1806 ?",o:["Alcool, sucre, eau, bitters","Gin et vermouth","Rhum, citron, sucre","Vin et eau-de-vie"],a:0,e:"Alcool, sucre, eau et bitters : c'est exactement la structure de l'Old Fashioned."},
+ {c:"Histoire",q:"Qui publie en 1862 le premier livre de recettes de cocktails ?",o:["Harry Craddock","Dale DeGroff","Jerry Thomas","Harry MacElhone"],a:2,e:"Jerry Thomas, « The Professor », avec How to Mix Drinks."},
+ {c:"Histoire",q:"Quel surnom porte Jerry Thomas ?",o:["The King","The Professor","The Beachcomber","The Doctor"],a:1,e:"« The Professor », père de la mixologie américaine."},
+ {c:"Prohibition",q:"Sur quelle période s'étend la Prohibition aux États-Unis ?",o:["1900-1913","1914-1918","1920-1933","1933-1945"],a:2,e:"De 1920 (Volstead Act) à 1933, abrogée par le 21e amendement."},
+ {c:"Prohibition",q:"Comment appelle-t-on les bars clandestins de la Prohibition ?",o:["Speakeasies","Saloons","Taverns","Cabarets"],a:0,e:"Les speakeasies, où l'on commandait à voix basse."},
+ {c:"Prohibition",q:"Dans quel hôtel londonien officiait Harry Craddock, auteur du Savoy Cocktail Book (1930) ?",o:["Le Ritz","Le Savoy","Le Claridge's","Le Connaught"],a:1,e:"Au Savoy de Londres, dont il a rédigé la bible de 1930."},
+ {c:"Prohibition",q:"Quelle ville devient une grande capitale du cocktail pendant la Prohibition grâce à l'exode des barmen ?",o:["Mexico","La Havane","Montréal","Lisbonne"],a:1,e:"La Havane, à Cuba, toute proche de la Floride."},
+ {c:"Bars mythiques",q:"Quel bar parisien est lié au Bloody Mary et au French 75 ?",o:["Le Bar Hemingway","Harry's New York Bar","Le Forvm","La Closerie"],a:1,e:"Le Harry's New York Bar d'Harry MacElhone, rue Daunou."},
+ {c:"Tiki",q:"À qui attribue-t-on, de façon disputée, la création du Mai Tai en 1944 ?",o:["Donn Beach","Trader Vic","Dale DeGroff","Sasha Petraske"],a:1,e:"Trader Vic (Victor Bergeron), mais Donn Beach l'a aussi revendiqué."},
+ {c:"Tiki",q:"Quel est l'esprit de base de la quasi-totalité des cocktails tiki ?",o:["Le gin","La tequila","Le rhum","Le whisky"],a:2,e:"Le rhum, accompagné de sirops exotiques et d'orgeat."},
+ {c:"Renaissance",q:"Quel barman est surnommé « King Cocktail » et relance les jus frais dès les années 1980 ?",o:["Sasha Petraske","Dale DeGroff","Harry Craddock","Jerry Thomas"],a:1,e:"Dale DeGroff, au Rainbow Room de New York."},
+ {c:"Renaissance",q:"Quel bar de Sasha Petraske (New York, 2000) relance le mouvement speakeasy moderne ?",o:["Death & Co","Milk & Honey","Employees Only","PDT"],a:1,e:"Milk & Honey, modèle de rigueur et de glace travaillée."},
+ {c:"Familles",q:"Quelle est la structure mère, dite « forme originelle » du cocktail ?",o:["Le Sour","L'Old Fashioned","Le Highball","Le Flip"],a:1,e:"L'Old Fashioned : spiritueux, sucre, bitters, glace."},
+ {c:"Familles",q:"De quelle famille fait partie le Whiskey Sour ?",o:["Highball","Sour","Julep","Flip"],a:1,e:"Le Sour : spiritueux, agrume, sucre."},
+ {c:"Familles",q:"Quel cocktail définit la famille du Julep ?",o:["Mojito","Mint Julep","Tom Collins","Caipirinha"],a:1,e:"Le Mint Julep : bourbon, sucre, menthe, glace pilée."},
+ {c:"Familles",q:"Le mot « punch » vient du hindi panch. Que signifie-t-il ?",o:["Trois","Cinq","Sept","Mélange"],a:1,e:"Cinq, pour les cinq ingrédients du punch d'origine."},
+ {c:"Familles",q:"Que signifie « Margarita » en espagnol, en référence à la famille des Daisy ?",o:["Marguerite","Perle","Citron","Sel"],a:0,e:"Marguerite, soit « daisy » en anglais : la Margarita est une daisy à la tequila."},
+ {c:"Classiques",q:"Le Negroni naît à Florence vers 1919 quand un comte demande de renforcer quel cocktail au gin ?",o:["Le Spritz","L'Americano","Le Martini","Le Boulevardier"],a:1,e:"L'Americano (Campari, vermouth rouge, soda), renforcé au gin par le comte Negroni."},
+ {c:"Classiques",q:"Quelles sont les proportions classiques du Negroni ?",o:["2-1-1","Parts égales","3-2-1","1-1-2"],a:1,e:"Parts égales : gin, Campari, vermouth rouge."},
+ {c:"Classiques",q:"Quel cocktail associe whiskey, vermouth rouge et Angostura, au verre à mélange ?",o:["Le Manhattan","Le Sazerac","Le Boulevardier","Le Rob Roy"],a:0,e:"Le Manhattan, originaire de New York."},
+ {c:"Classiques",q:"Le Daiquiri est attribué à Jennings Cox près d'une mine de quel pays ?",o:["Mexique","Cuba","Porto Rico","Jamaïque"],a:1,e:"Cuba, près de la mine de Daiquirí."},
+ {c:"Classiques",q:"Quels bitters sont indissociables du Sazerac ?",o:["Angostura","Peychaud's","Orange","Celery"],a:1,e:"Le Peychaud's, créé à La Nouvelle-Orléans, avec un rinçage d'absinthe."},
+ {c:"Classiques",q:"À quoi le French 75 doit-il son nom ?",o:["Un canon de 75 mm","Une année","Une adresse","Un régiment"],a:0,e:"Au canon de campagne français de 75 mm, pour sa puissance."},
+ {c:"Classiques",q:"Où est né le Bellini (prosecco et pêche blanche) ?",o:["Harry's Bar de Venise","Le Cipriani de Londres","Le Florian","Le Danieli"],a:0,e:"Au Harry's Bar de Venise, par Giuseppe Cipriani."},
+ {c:"Classiques",q:"Dans quel hôtel est né le Singapore Sling, vers 1915 ?",o:["Le Raffles","Le Peninsula","Le Mandarin","Le Marina Bay"],a:0,e:"Au Raffles Hotel de Singapour, par Ngiam Tong Boon."},
+ {c:"Classiques",q:"De quel pays la Piña Colada est-elle le cocktail national ?",o:["Cuba","Porto Rico","République dominicaine","Jamaïque"],a:1,e:"Porto Rico. Rhum, crème de coco, ananas."},
+ {c:"Classiques",q:"Quel spiritueux est la base de la Caipirinha ?",o:["Le rhum agricole","La cachaça","Le pisco","La tequila"],a:1,e:"La cachaça brésilienne, distillée à partir de jus de canne."},
+ {c:"Spiritueux",q:"Quel arôme doit dominer dans un gin ?",o:["La coriandre","Le genièvre","L'agrume","L'angélique"],a:1,e:"Le genièvre (juniper) : c'est la condition légale du gin."},
+ {c:"Spiritueux",q:"Quel pourcentage minimal de maïs définit un Bourbon ?",o:["40 %","51 %","75 %","100 %"],a:1,e:"Au moins 51 % de maïs, vieilli en fût de chêne neuf carbonisé, aux USA."},
+ {c:"Spiritueux",q:"Quelle céréale domine dans un whisky « Rye » ?",o:["L'orge","Le seigle","Le maïs","Le blé"],a:1,e:"Le seigle (rye), à au moins 51 %."},
+ {c:"Spiritueux",q:"De quelle plante est exclusivement issue la tequila ?",o:["L'agave bleu Weber","Le maguey sauvage","La canne","Le cactus"],a:0,e:"L'agave bleu Weber, principalement dans la région de Jalisco."},
+ {c:"Spiritueux",q:"Qu'est-ce qui distingue le mezcal de la tequila au goût ?",o:["Le sucre ajouté","Les notes fumées","Le vieillissement obligatoire","L'absence d'agave"],a:1,e:"La cuisson de l'agave en four enterré donne au mezcal ses notes fumées."},
+ {c:"Spiritueux",q:"Le rhum agricole est issu de quel produit de la canne ?",o:["La mélasse","Le jus de canne frais","Le sirop de sucre","Le sucre roux"],a:1,e:"Du pur jus de canne. La mélasse donne le rhum traditionnel ou industriel."},
+ {c:"Spiritueux",q:"Quelle est la méthode de distillation du Cognac ?",o:["Distillation continue","Double distillation en alambic charentais","Distillation sous vide","Triple distillation"],a:1,e:"Double distillation (la repasse) en alambic charentais à repasse."},
+ {c:"Spiritueux",q:"Quelle plante aromatise le vermouth et lui donne son nom ?",o:["La gentiane","L'armoise","Le quinquina","L'anis"],a:1,e:"L'armoise (wermut en allemand), d'où vient le mot vermouth."},
+ {c:"Amers & liqueurs",q:"Quels bitters viennent de Trinidad ?",o:["Peychaud's","Angostura","Orange","Fee Brothers"],a:1,e:"L'Angostura, la référence mondiale, originaire de Trinidad."},
+ {c:"Amers & liqueurs",q:"Quel amer italien très puissant est surnommé « le shot des barmen » ?",o:["Aperol","Averna","Fernet-Branca","Montenegro"],a:2,e:"Le Fernet-Branca, digestif très amer prisé de la profession."},
+ {c:"Amers & liqueurs",q:"Qui produit la Chartreuse Verte et Jaune ?",o:["Des moines chartreux","Des bénédictins","Une maison de Voiron laïque","Des trappistes"],a:0,e:"Les moines chartreux, près de Voiron. La Verte titre 55 %."},
+ {c:"Amers & liqueurs",q:"Quelle liqueur d'orange est élaborée à base de cognac ?",o:["Cointreau","Grand Marnier","Combier","Curaçao Bols"],a:1,e:"Le Grand Marnier, contrairement au Cointreau qui est un triple sec neutre."},
+ {c:"Techniques",q:"Quelle technique convient à un cocktail entièrement composé d'alcools, comme le Martini ?",o:["Le shake","Le stir (mélange)","Le dry shake","Le build"],a:1,e:"Le stir au verre à mélange : limpidité et dilution maîtrisée."},
+ {c:"Techniques",q:"Pourquoi réalise-t-on un « dry shake » ?",o:["Pour refroidir plus vite","Pour émulsionner le blanc d'œuf","Pour éviter la dilution totale","Pour aérer le gin"],a:1,e:"Sans glace d'abord, pour émulsionner le blanc d'œuf, puis on refrappe avec glace."},
+ {c:"Techniques",q:"À quoi sert le « double strain » ?",o:["Doubler la dose","Filtrer finement glace et pulpe","Mélanger deux verres","Servir deux portions"],a:1,e:"Une double filtration avec passette fine, pour un rendu net."},
+ {c:"Techniques",q:"Comment s'appelle le doseur à deux cônes du barman ?",o:["Le jigger","Le hawthorne","Le julep","Le boston"],a:0,e:"Le jigger, doseur de précision."},
+ {c:"Techniques",q:"Quelle passette à ressort se pose sur la timbale d'un shaker ?",o:["La passette Julep","La passette Hawthorne","La passette conique","La passette fine"],a:1,e:"La passette Hawthorne, reconnaissable à son ressort."},
+ {c:"Institutions",q:"Que signifie le sigle IBA ?",o:["International Bar Academy","International Bartenders Association","Italian Bartenders Alliance","International Beverage Authority"],a:1,e:"International Bartenders Association, fondée en 1951."},
+ {c:"Institutions",q:"En combien de catégories l'IBA classe-t-elle ses cocktails officiels ?",o:["Deux","Trois","Cinq","Sept"],a:1,e:"Trois : The Unforgettables, Contemporary Classics, New Era Drinks."},
+ {c:"Institutions",q:"Que désigne le sigle ABF dans le monde du bar français ?",o:["Académie du Bar Français","Association des Barmen de France","Alliance Bar et Fermentation","Aperitivo Bar Federation"],a:1,e:"L'Association des Barmen de France."},
+ {c:"Histoires",q:"Quel cocktail des années 1880 est l'ancêtre direct du Martini ?",o:["Le Martinez","Le Gibson","Le Vesper","Le Tuxedo"],a:0,e:"Le Martinez : gin Old Tom, vermouth doux, marasquin, bitters."},
+ {c:"Histoires",q:"Comment le nom du Tom Collins est-il devenu célèbre ?",o:["Par un barman londonien","Par un canular de 1874","Par une chanson","Par un président"],a:1,e:"Le « Great Tom Collins Hoax » de 1874 : on faisait croire qu'un Tom Collins vous calomniait au bar voisin."},
+ {c:"Histoires",q:"Dans quel bar de La Havane Hemingway buvait-il son « Papa Doble » ?",o:["La Bodeguita del Medio","El Floridita","Sloppy Joe's","La Tropicana"],a:1,e:"El Floridita, où Constantino Ribalaigua a perfectionné le Daiquiri."},
+ {c:"Histoires",q:"Le Moscow Mule a été inventé vers 1941 pour promouvoir quel spiritueux aux États-Unis ?",o:["Le bourbon","La vodka","La tequila","Le gin"],a:1,e:"La vodka Smirnoff, alors inconnue des Américains."},
+ {c:"Histoires",q:"Dans quel récipient sert-on traditionnellement le Moscow Mule ?",o:["Un verre highball","Un mug en cuivre","Une timbale en argent","Un verre à julep"],a:1,e:"Le mug en cuivre, signature visuelle du cocktail."},
+ {c:"Histoires",q:"Le Cuba Libre associe le rhum à quel ingrédient ?",o:["De la limonade","Du Coca-Cola","Du ginger beer","De l'eau gazeuse"],a:1,e:"Du Coca-Cola, né à Cuba après la guerre hispano-américaine."},
+ {c:"Histoires",q:"Quel cordial caractérise le Gimlet ?",o:["Le sirop d'orgeat","Le cordial de citron vert Rose's","Le sirop de sucre de canne","Le falernum"],a:1,e:"Le Rose's Lime, lié au jus de citron vert anti-scorbut de la Royal Navy."},
+ {c:"Histoires",q:"Qui a créé l'Espresso Martini à Londres à la fin des années 1980 ?",o:["Sasha Petraske","Dick Bradsell","Dale DeGroff","Salvatore Calabrese"],a:1,e:"Dick Bradsell, sous le nom initial de « Vodka Espresso »."},
+ {c:"Histoires",q:"Quel barman crée le Penicillin en 2005 ?",o:["Sam Ross","Audrey Saunders","Jim Meehan","Tony Conigliaro"],a:0,e:"Sam Ross, au Milk & Honey : scotch, miel-gingembre, citron, float tourbé."},
+ {c:"Histoires",q:"Quel ingrédient signe le Hanky Panky d'Ada Coleman ?",o:["L'absinthe","Le Fernet-Branca","La Chartreuse","Le Campari"],a:1,e:"Un trait de Fernet-Branca, sur une base gin et vermouth doux."},
+ {c:"Histoires",q:"Quel cocktail de La Nouvelle-Orléans est réputé pour un shake interminable ?",o:["Le Sazerac","Le Ramos Gin Fizz","Le Vieux Carré","Le Brandy Crusta"],a:1,e:"Le Ramos Gin Fizz, avec sa légende de « shaker boys » se relayant."},
+ {c:"Histoires",q:"Le Last Word mélange gin, marasquin, citron vert et quelle liqueur, à parts égales ?",o:["La Bénédictine","La Chartreuse verte","Le Cointreau","La Sambuca"],a:1,e:"La Chartreuse verte. Né à Detroit, ressuscité à Seattle dans les années 2000."},
+ {c:"Histoires",q:"Le Negroni Sbagliato (« raté ») remplace le gin par quoi ?",o:["Du spumante","Du soda","Du prosecco sans alcool","De la vodka"],a:0,e:"Du spumante (vin pétillant), né d'une erreur au Bar Basso de Milan."},
+ {c:"IBA",q:"En quelle année l'IBA a-t-elle été fondée ?",o:["1937","1948","1951","1960"],a:2,e:"Le 24 février 1951, au Grand Hotel de Torquay, en Angleterre."},
+ {c:"IBA",q:"Dans quelle ville l'IBA a-t-elle été fondée ?",o:["Londres","Torquay","Amsterdam","Oslo"],a:1,e:"À Torquay (Angleterre), au saloon du Grand Hotel."},
+ {c:"IBA",q:"Combien de guildes ont fondé l'IBA en 1951 ?",o:["Cinq","Sept","Dix","Douze"],a:1,e:"Sept : Danemark, France, Italie, Pays-Bas, Suède, Suisse, Royaume-Uni."},
+ {c:"IBA",q:"Lequel de ces pays NE fait PAS partie des sept fondateurs de l'IBA ?",o:["La France","L'Allemagne","La Suède","Le Danemark"],a:1,e:"L'Allemagne n'est pas fondatrice. Les sept sont Danemark, France, Italie, Pays-Bas, Suède, Suisse, Royaume-Uni."},
+ {c:"IBA",q:"En combien de catégories la liste officielle des cocktails IBA est-elle divisée ?",o:["Deux","Trois","Quatre","Six"],a:1,e:"Trois : The Unforgettables, Contemporary Classics, New Era Drinks."},
+ {c:"IBA",q:"Comment s'appelle la catégorie IBA des classiques intemporels ?",o:["The Originals","The Unforgettables","The Timeless","The Heritage"],a:1,e:"« The Unforgettables », socle historique de la liste."},
+ {c:"IBA",q:"Comment s'appelle la compétition annuelle phare de l'IBA ?",o:["World Cocktail Championship","Global Bar Trophy","International Mixing Cup","IBA Open"],a:0,e:"Le World Cocktail Championship (WCC), depuis 1955, dans un pays différent chaque année."},
+ {c:"IBA",q:"Dans quelle catégorie IBA classe-t-on l'Old Fashioned et le Negroni ?",o:["New Era Drinks","Contemporary Classics","The Unforgettables","Sparkling"],a:2,e:"Dans The Unforgettables, les classiques fondateurs."},
+ {c:"Anciens",q:"Quel cocktail est réputé avoir popularisé l'usage de la paille au 19e siècle ?",o:["Le Mint Julep","Le Sherry Cobbler","Le Sazerac","Le Tom Collins"],a:1,e:"Le Sherry Cobbler, énorme succès des années 1830-40."},
+ {c:"Anciens",q:"Quel cocktail de La Nouvelle-Orléans est souvent cité comme l'un des plus anciens, d'abord à base de cognac ?",o:["Le Vieux Carré","Le Sazerac","Le Ramos Gin Fizz","Le Brandy Crusta"],a:1,e:"Le Sazerac, milieu du 19e siècle, à l'origine au cognac puis au rye."},
+ {c:"Grands noms",q:"Qui a écrit le Bartender's Manual de 1882, pionnier de l'organisation au bar ?",o:["Jerry Thomas","Harry Johnson","Harry Craddock","Billy Tarling"],a:1,e:"Harry Johnson, figure de l'organisation et du service professionnel."},
+ {c:"Grands noms",q:"Quelle barmaid de l'American Bar du Savoy est une grande figure féminine du métier ?",o:["Ada Coleman","Audrey Saunders","Julie Reiner","Misty Kalkofen"],a:0,e:"Ada « Coley » Coleman, créatrice du Hanky Panky."},
+ {c:"Grands noms",q:"Qui fut le premier président de l'IBA, également auteur du Café Royal Cocktail Book ?",o:["Angelo Zola","Billy Tarling","George Baker","Harry MacElhone"],a:1,e:"W. J. « Billy » Tarling, du UKBG britannique."},
+ {c:"Grands noms",q:"Quel barman français est longtemps resté chef du Bar Hemingway au Ritz Paris ?",o:["Colin Field","Joseph Boudou","Frank Meier","Bertrand Bouvier"],a:0,e:"Colin Field, régulièrement classé parmi les meilleurs barmen du monde."},
+
+ {c:"Spiritueux",q:"Quel procédé de filtrage sur charbon d'érable caractérise le Tennessee whiskey ?",o:["Le Solera","Le Lincoln County Process","Le Coffey still","Le Charring"],a:1,e:"Le Lincoln County Process, filtrage sur charbon d'érable avant vieillissement."},
+ {c:"Spiritueux",q:"Combien d'années minimum doit vieillir un Scotch whisky ?",o:["1 an","3 ans","5 ans","10 ans"],a:1,e:"Trois ans minimum en fût de chêne, sur le sol écossais."},
+ {c:"Spiritueux",q:"Dans quel type de fût le bourbon doit-il vieillir ?",o:["Fût de sherry","Fût de chêne neuf carbonisé","Fût de cognac","N'importe quel fût"],a:1,e:"Du chêne américain neuf, carbonisé à l'intérieur."},
+ {c:"Spiritueux",q:"Quelle eau-de-vie normande est distillée à partir de pommes ?",o:["L'Armagnac","Le Calvados","La Mirabelle","Le Kirsch"],a:1,e:"Le Calvados, AOC normande à base de cidre."},
+ {c:"Spiritueux",q:"La grappa italienne est distillée à partir de quoi ?",o:["Du vin","Du marc de raisin","Des cerises","Des céréales"],a:1,e:"Du marc de raisin, les résidus du pressurage."},
+ {c:"Spiritueux",q:"Le pisco est produit au Pérou et dans quel autre pays ?",o:["L'Argentine","Le Chili","La Bolivie","Le Mexique"],a:1,e:"Le Chili. Les deux pays s'en disputent la paternité."},
+ {c:"Spiritueux",q:"Depuis 2018, un cognac « XO » doit vieillir au minimum combien d'années ?",o:["6 ans","8 ans","10 ans","12 ans"],a:2,e:"Dix ans minimum depuis 2018 (six ans auparavant)."},
+ {c:"Spiritueux",q:"Quel est le vieillissement minimum d'un cognac VSOP ?",o:["2 ans","4 ans","6 ans","10 ans"],a:1,e:"Quatre ans minimum pour la mention VSOP."},
+ {c:"Spiritueux",q:"Dans quelle région française produit-on l'Armagnac ?",o:["La Charente","La Gascogne","Le Cognaçais","La Provence"],a:1,e:"En Gascogne, le plus souvent par distillation continue."},
+ {c:"Spiritueux",q:"Que signifie la mention « Reposado » sur une tequila ?",o:["100 % agave","Vieillie 2 à 12 mois","Non vieillie","Vieillie plus de 3 ans"],a:1,e:"Un repos de 2 à 12 mois en fût. Au-delà d'un an, c'est Añejo."},
+ {c:"Spiritueux",q:"À quel degré environ correspond la mention « Navy Strength » ?",o:["40 %","47 %","57 %","70 %"],a:2,e:"Environ 57 %, l'ancien degré « à l'épreuve » de la marine."},
+ {c:"Spiritueux",q:"Quelle est la « sainte trinité » aromatique de l'absinthe ?",o:["Anis, fenouil, grande absinthe","Menthe, anis, réglisse","Genièvre, coriandre, citron","Badiane, cannelle, clou"],a:0,e:"Grande absinthe, anis vert et fenouil."},
+ {c:"Amers & liqueurs",q:"De quelle plante le Suze tire-t-il son amertume ?",o:["La gentiane","L'armoise","Le quinquina","La rhubarbe"],a:0,e:"La racine de gentiane."},
+ {c:"Amers & liqueurs",q:"Dans quelle ville normande est née la Bénédictine ?",o:["Fécamp","Honfleur","Rouen","Dieppe"],a:0,e:"À Fécamp, où se trouve le Palais Bénédictine."},
+ {c:"Amers & liqueurs",q:"Lequel est le moins fort et le moins amer ?",o:["Le Campari","L'Aperol","Le Fernet-Branca","La Suze"],a:1,e:"L'Aperol, autour de 11 %, plus doux que le Campari (~25 %)."},
+ {c:"Amers & liqueurs",q:"Quel vermouth italien « mi-doux mi-amer » est produit par Carpano ?",o:["Le Bianco","Le Punt e Mes","Le Rosso","Le Dry"],a:1,e:"Le Punt e Mes (« point et demi » en piémontais)."},
+ {c:"Classiques",q:"Le Boulevardier est un Negroni où le gin est remplacé par quoi ?",o:["De la vodka","Du whiskey","Du rhum","De la tequila"],a:1,e:"Du whiskey (bourbon ou rye). Campari et vermouth rouge restent."},
+ {c:"Classiques",q:"Quel jus donne sa couleur rose au Cosmopolitan ?",o:["Le jus de grenade","Le jus de cranberry","Le jus de pamplemousse","Le jus de framboise"],a:1,e:"Le jus de cranberry (canneberge)."},
+ {c:"Classiques",q:"Quel sirop d'amande entre dans le Mai Tai ?",o:["Le falernum","L'orgeat","Le sirop de sucre","La grenadine"],a:1,e:"L'orgeat, sirop d'amande."},
+ {c:"Classiques",q:"Le Paloma associe la tequila à quel soda ?",o:["Tonic","Pamplemousse","Cola","Gingembre"],a:1,e:"Un soda au pamplemousse, avec un trait de citron vert."},
+ {c:"Classiques",q:"Le Dark 'n' Stormy associe du rhum brun à quel allongé ?",o:["Tonic","Ginger beer","Soda","Cola"],a:1,e:"De la ginger beer, sur laquelle on fait « flotter » le rhum."},
+ {c:"Classiques",q:"Le Vesper de James Bond associe gin, vodka et quoi ?",o:["Du Lillet","Du vermouth dry","Du Cointreau","De la Suze"],a:0,e:"Du Lillet (à l'origine Kina Lillet)."},
+ {c:"Classiques",q:"Le Corpse Reviver n°2 se termine par un rinçage de quoi ?",o:["Chartreuse","Absinthe","Fernet","Curaçao"],a:1,e:"Un rinçage d'absinthe dans le verre. Gin, Cointreau, Lillet, citron pour le reste."},
+ {c:"Classiques",q:"Le Bramble, créé par Dick Bradsell, est un gin sour rehaussé de quelle liqueur ?",o:["Crème de cassis","Crème de mûre","Crème de pêche","Crème de violette"],a:1,e:"La crème de mûre, versée pour l'effet « saignant »."},
+ {c:"Classiques",q:"Le White Lady associe gin, citron et quelle liqueur ?",o:["Triple sec","Marasquin","Chartreuse","Crème de cacao"],a:0,e:"Le triple sec (type Cointreau)."},
+ {c:"Familles",q:"L'Americano est composé de Campari, vermouth rouge et de quoi ?",o:["Gin","Soda","Tonic","Prosecco"],a:1,e:"De l'eau gazeuse. Avec du gin à la place du soda, il devient un Negroni."},
+ {c:"Familles",q:"Quel spiritueux est la base du Tom Collins ?",o:["Le gin","La vodka","Le rhum","Le whisky"],a:0,e:"Le gin. Avec un autre alcool on change le nom (Vodka Collins, etc.)."},
+ {c:"Familles",q:"Quels trois éléments de base partagent le Daiquiri et le Mojito ?",o:["Rhum, citron vert, sucre","Rhum, menthe, soda","Rhum, ananas, coco","Rhum, citron, angostura"],a:0,e:"Rhum, citron vert et sucre : le Mojito y ajoute menthe et soda."},
+ {c:"Techniques",q:"Dans quel verre sert-on classiquement un Old Fashioned ?",o:["Une coupe","Un tumbler (verre bas)","Un highball","Une flûte"],a:1,e:"Un tumbler, ou verre à old fashioned, sur un gros glaçon."},
+ {c:"Techniques",q:"Le verre Collins ou highball est destiné à quel type de boisson ?",o:["Les shots","Les longs drinks","Les digestifs","Les cocktails tout-alcool"],a:1,e:"Les longs drinks allongés au soda."},
+ {c:"Techniques",q:"Que signifie servir un spiritueux « neat » ?",o:["Sur glace","Sec, sans glace ni mélange","Avec un trait d'eau","Frappé"],a:1,e:"« Neat » : pur, à température ambiante, sans glace."},
+ {c:"Techniques",q:"Un Martini « dirty » contient un ajout de quoi ?",o:["Bitters","Saumure d'olive","Jus de citron","Absinthe"],a:1,e:"De la saumure d'olive, qui le trouble et le sale."},
+ {c:"Techniques",q:"Comment appelle-t-on l'écorce d'agrume dont on exprime les huiles en garniture ?",o:["Le zeste (twist)","La brunoise","Le supreme","Le wedge"],a:0,e:"Le zeste, ou twist, dont on presse les huiles au-dessus du verre."},
+ {c:"Techniques",q:"Quel shaker se compose d'un verre et d'une timbale métallique ?",o:["Le cobbler","Le boston","Le parisien","Le japonais"],a:1,e:"Le shaker Boston : un verre (ou timbale) plus une grande timbale."},
+ {c:"Techniques",q:"Quel outil sert à piler menthe, sucre ou fruits au fond du verre ?",o:["Le jigger","Le muddler (pilon)","Le bar spoon","Le strainer"],a:1,e:"Le muddler, ou pilon."},
+ {c:"Histoire",q:"Quel amendement à la Constitution a instauré la Prohibition ?",o:["Le 16e","Le 18e","Le 19e","Le 21e"],a:1,e:"Le 18e amendement, mis en œuvre par le Volstead Act."},
+ {c:"Histoire",q:"Quel amendement a abrogé la Prohibition en 1933 ?",o:["Le 18e","Le 20e","Le 21e","Le 22e"],a:2,e:"Le 21e amendement, seul à avoir annulé un amendement précédent."},
+ {c:"Histoire",q:"Comment s'appelle la loi qui a appliqué la Prohibition ?",o:["Le Volstead Act","Le Sherman Act","Le Harrison Act","Le Mann Act"],a:0,e:"Le Volstead Act, du nom du représentant Andrew Volstead."},
+ {c:"Histoire",q:"Quel cocktail flambé spectaculaire est attribué à Jerry Thomas ?",o:["Le Blue Blazer","Le Flaming Sambuca","Le B-52","Le Corpse Reviver"],a:0,e:"Le Blue Blazer, whisky enflammé transvasé entre deux timbales."},
+ {c:"Histoire",q:"De quelle langue vient le mot « punch » (panch) ?",o:["Du persan","De l'hindi","Du portugais","De l'arabe"],a:1,e:"De l'hindi panch, « cinq », pour cinq ingrédients."},
+ {c:"Histoire",q:"Quel cocktail tiki Donn Beach (Don the Beachcomber) revendique-t-il ?",o:["Le Mai Tai","Le Zombie","Le Painkiller","Le Hurricane"],a:1,e:"Le Zombie, redoutable assemblage de rhums créé dans les années 1930."},
+ {c:"Spiritueux",q:"Que signifie « single malt » ?",o:["Un seul fût","Orge maltée, une seule distillerie","Un seul millésime","Une seule région"],a:1,e:"Orge maltée et provenance d'une unique distillerie."},
+ {c:"Spiritueux",q:"Quel arbuste fournit la baie de genièvre du gin ?",o:["Le genévrier","Le sureau","L'aubépine","Le sorbier"],a:0,e:"Le genévrier (Juniperus communis)."},
+ {c:"Spiritueux",q:"Le rhum dit « traditionnel » ou industriel est issu de quoi ?",o:["Du jus de canne frais","De la mélasse","Du sirop de sucre","Du miel de canne"],a:1,e:"De la mélasse, résidu du raffinage du sucre. Le jus frais donne l'agricole."},
+
+ {c:"Gin Tonic",q:"D'où vient l'amertume caractéristique du tonic ?",o:["Du houblon","De la quinine","De la gentiane","Du pamplemousse"],a:1,e:"De la quinine, qui servait aussi de remède."},
+ {c:"Gin Tonic",q:"La quinine est extraite de l'écorce de quel arbre ?",o:["Le quinquina (cinchona)","Le bouleau","Le quassia","Le chêne-liège"],a:0,e:"Le quinquina, ou cinchona, originaire des Andes."},
+ {c:"Gin Tonic",q:"Contre quelle maladie les Britanniques en Inde consommaient-ils la quinine ?",o:["Le choléra","Le paludisme","La fièvre jaune","La dysenterie"],a:1,e:"Le paludisme (malaria). Le gin servait à adoucir l'amertume de la quinine."},
+ {c:"Piña Colada",q:"Dans quel hôtel de San Juan la Piña Colada moderne naît-elle en 1954 ?",o:["Le Condado","Le Caribe Hilton","Le Normandie","Le San Juan Marriott"],a:1,e:"Au Caribe Hilton, par le barman Ramón « Monchito » Marrero."},
+ {c:"Piña Colada",q:"En quelle année la Piña Colada devient-elle boisson nationale de Porto Rico ?",o:["1954","1963","1978","1992"],a:2,e:"En 1978, près de 25 ans après sa création."},
+ {c:"Piña Colada",q:"Quelle crème de coco a rendu possible la Piña Colada moderne ?",o:["Coco López","Malibu","Coco Réal","Monin Coco"],a:0,e:"La crème de coco Coco López, alors récemment commercialisée."},
+ {c:"Mojito",q:"Quel ancêtre du Mojito, à base d'aguardiente, est associé au corsaire Francis Drake ?",o:["El Draque","El Presidente","La Floridita","El Mulato"],a:0,e:"« El Draque », mêlant eau-de-vie de canne, citron vert, menthe et sucre."},
+ {c:"Mojito",q:"Quel bar de La Havane est le temple emblématique du Mojito ?",o:["El Floridita","La Bodeguita del Medio","Sloppy Joe's","La Tropicana"],a:1,e:"La Bodeguita del Medio, à La Havane."},
+ {c:"Daiquiri",q:"Le « Papa Doble » d'Hemingway était un Daiquiri sans quoi ?",o:["Sans glace","Sans sucre","Sans citron","Sans rhum"],a:1,e:"Sans sucre, double dose de rhum, avec pamplemousse et marasquin."},
+ {c:"Sazerac",q:"Quel apothicaire de La Nouvelle-Orléans a donné son nom aux bitters du Sazerac ?",o:["Antoine Peychaud","Jacob Boehm","Henry Ramos","Émile Sazerac"],a:0,e:"Antoine Peychaud, créateur des Peychaud's bitters."},
+ {c:"Sazerac",q:"Quel spiritueux servait de base au Sazerac à l'origine ?",o:["Le rye","Le cognac","Le bourbon","Le rhum"],a:1,e:"Le cognac (Sazerac de Forge), avant le passage au rye."},
+ {c:"Mint Julep",q:"De quelle course hippique le Mint Julep est-il la boisson officielle ?",o:["L'Ascot","Le Kentucky Derby","Le Prix de Diane","Le Preakness"],a:1,e:"Le Kentucky Derby, où il coule à flots chaque printemps."},
+ {c:"Bloody Mary",q:"Sous quel nom plus « convenable » le Bloody Mary fut-il un temps servi au St. Regis de New York ?",o:["Red Snapper","Bloody Caesar","Red Devil","Tomato Royale"],a:0,e:"« Red Snapper », jugé moins vulgaire que Bloody Mary."},
+ {c:"Singapore Sling",q:"Quel barman a créé le Singapore Sling au Raffles vers 1915 ?",o:["Ngiam Tong Boon","Jerry Thomas","Joseph Boon","Harry Craddock"],a:0,e:"Ngiam Tong Boon, au Long Bar du Raffles Hotel."},
+ {c:"Cosmopolitan",q:"Quelle série télévisée a fait du Cosmopolitan une icône à la fin des années 1990 ?",o:["Friends","Sex and the City","Mad Men","Cheers"],a:1,e:"Sex and the City, qui en a fait le cocktail des soirées new-yorkaises."},
+ {c:"Cosmopolitan",q:"Quel barman new-yorkais revendique la version moderne du Cosmopolitan en 1988 ?",o:["Dale DeGroff","Toby Cecchini","Sasha Petraske","Dick Bradsell"],a:1,e:"Toby Cecchini, à l'Odeon. Cheryl Cook à Miami en revendique une version antérieure."},
+ {c:"Aviation",q:"Quelle liqueur donne sa teinte bleutée à l'Aviation ?",o:["Le curaçao bleu","La crème de violette","Le marasquin","La crème de mûre"],a:1,e:"La crème de violette, évoquant le ciel, d'où le nom."},
+ {c:"Irish Coffee",q:"Quel spiritueux entre dans un Irish Coffee, avec café, sucre et crème ?",o:["Le whiskey irlandais","Le scotch","Le bourbon","Le brandy"],a:0,e:"Le whiskey irlandais, créé par Joe Sheridan dans un terminal d'hydravions irlandais."},
+ {c:"Sidecar",q:"Le Sidecar associe cognac, citron et quelle liqueur d'orange ?",o:["Le triple sec","Le Grand Marnier","La Suze","Le marasquin"],a:0,e:"Un triple sec (type Cointreau). Paternité disputée entre Paris et Londres."},
+ {c:"Familles",q:"De quelle grande famille la Margarita est-elle une variante à la tequila ?",o:["Le Sour","Le Daisy","Le Sling","Le Flip"],a:1,e:"Le Daisy : « margarita » signifie marguerite, soit « daisy » en anglais."},
+ {c:"Classiques",q:"Le Garibaldi associe le Campari à quel jus, longuement aéré ?",o:["Jus d'orange","Jus de pamplemousse","Jus de cranberry","Jus de tomate"],a:0,e:"Du jus d'orange, fouetté pour une texture mousseuse (« fluffy »)."},
+ {c:"Techniques",q:"Comment prépare-t-on traditionnellement un Old Fashioned au départ ?",o:["En shakant le sucre","En écrasant un sucre imbibé de bitters","En flambant le whisky","En filtrant deux fois"],a:1,e:"On écrase un morceau de sucre imbibé de bitters, puis on ajoute le spiritueux et la glace."},
+ {c:"Anciens",q:"À qui doit-on le premier livre de cocktails américain, en 1862 ?",o:["Harry Johnson","Jerry Thomas","William Schmidt","Harry Craddock"],a:1,e:"Jerry Thomas, avec The Bon Vivant's Companion."},
+ {c:"Pisco Sour",q:"Quel ingrédient donne sa mousse onctueuse au Pisco Sour ?",o:["La crème","Le blanc d'œuf","Le sirop de gomme","Le lait de coco"],a:1,e:"Le blanc d'œuf, frappé avec le pisco, le citron vert et le sucre, puis Angostura sur la mousse."},
+{c:"Spiritueux",q:"Aux États-Unis, à combien de degrés correspond un alcool « 100 proof » ?",o:["40 %","50 %","60 %","100 %"],a:1,e:"50 % : le proof américain vaut le double du degré d'alcool."},
+ {c:"Spiritueux",q:"Comment nomme-t-on la part d'alcool qui s'évapore d'un fût durant le vieillissement ?",o:["La part des anges","La queue de chauffe","Le coeur de chauffe","La part du diable"],a:0,e:"La « part des anges » (angel's share)."},
+ {c:"Spiritueux",q:"Quelle région écossaise est célèbre pour ses whiskies très tourbés ?",o:["Le Speyside","Islay","Les Highlands","Les Lowlands"],a:1,e:"Islay (Laphroaig, Ardbeg, Lagavulin), aux notes fumées."},
+ {c:"Spiritueux",q:"Quelle région écossaise concentre le plus de distilleries ?",o:["Islay","Le Speyside","Campbeltown","Les Lowlands"],a:1,e:"Le Speyside, coeur historique du single malt."},
+ {c:"Spiritueux",q:"Le bourbon doit-il obligatoirement être produit dans le Kentucky ?",o:["Oui, uniquement","Non, partout aux États-Unis","Kentucky ou Tennessee","Partout dans le monde"],a:1,e:"Le bourbon peut être produit dans tous les États-Unis, même si le Kentucky domine."},
+ {c:"Spiritueux",q:"Quelle est la distillation traditionnelle du whiskey irlandais ?",o:["Triple distillation","Distillation unique","Distillation continue","Distillation sous vide"],a:0,e:"La triple distillation, qui donne un style souple."},
+ {c:"Spiritueux",q:"Que donne la tourbe au whisky lors du maltage ?",o:["Une couleur dorée","Des arômes fumés","Un goût sucré","De la rondeur"],a:1,e:"Les arômes fumés et médicinaux, typiques d'Islay."},
+ {c:"Spiritueux",q:"Quel cépage domine dans l'élaboration du Cognac ?",o:["Le Chardonnay","L'Ugni Blanc","Le Colombard","Le Sauvignon"],a:1,e:"L'Ugni Blanc, vin blanc acide idéal à la distillation."},
+ {c:"Spiritueux",q:"Quel est le cru le plus prestigieux du Cognac ?",o:["Les Borderies","La Grande Champagne","Les Fins Bois","Les Bons Bois"],a:1,e:"La Grande Champagne, au coeur de l'appellation."},
+ {c:"Spiritueux",q:"Que désigne un Cognac « Fine Champagne » ?",o:["Un assemblage Grande et Petite Champagne","Un cognac pétillant","Un cru unique","Un cognac jeune"],a:0,e:"Un assemblage de Grande et Petite Champagne, dont au moins 50 % de Grande."},
+ {c:"Spiritueux",q:"Quelle est la sous-région la plus réputée de l'Armagnac ?",o:["Le Haut-Armagnac","La Ténarèze","Le Bas-Armagnac","Le Condomois"],a:2,e:"Le Bas-Armagnac, aux eaux-de-vie fines et fruitées."},
+ {c:"Spiritueux",q:"Quel style de gin, légèrement sucré, se situe entre le genever et le London Dry ?",o:["Le Plymouth","L'Old Tom","Le Navy","Le Sloe"],a:1,e:"L'Old Tom gin, prisé pour les cocktails anciens comme le Martinez."},
+ {c:"Spiritueux",q:"Le genever, ancêtre du gin, est une spécialité de quelle région ?",o:["L'Espagne","Les Pays-Bas","L'Écosse","L'Italie"],a:1,e:"Les Pays-Bas. Le genever est malté, plus rond que le gin anglais."},
+ {c:"Spiritueux",q:"Le « sloe gin » est obtenu par macération de quel fruit ?",o:["La mûre","La prunelle","La myrtille","La groseille"],a:1,e:"La prunelle (sloe), baie du prunellier."},
+ {c:"Spiritueux",q:"Que signifie littéralement le mot « vodka » ?",o:["Eau de feu","Petite eau","Eau claire","Eau-de-vie"],a:1,e:"« Petite eau », diminutif slave de voda (l'eau)."},
+ {c:"Spiritueux",q:"De quelle partie de l'agave tire-t-on la tequila ?",o:["Les feuilles","Le coeur (la piña)","Les racines","La fleur"],a:1,e:"Le coeur, ou piña, cuit puis pressé."},
+ {c:"Spiritueux",q:"Quel est le degré d'alcool maximal légal de la cachaça ?",o:["40 %","48 %","54 %","60 %"],a:1,e:"48 %. La cachaça titre entre 38 et 48 %."},
+ {c:"Spiritueux",q:"Quel style de rhum est connu pour ses arômes lourds et ses esters élevés (« funk ») ?",o:["Le rhum espagnol","Le rhum agricole","Le rhum jamaïcain","La cachaça"],a:2,e:"Le rhum jamaïcain, riche en esters via une fermentation longue et le dunder."},
+ {c:"Spiritueux",q:"L'aquavit scandinave est principalement aromatisé avec :",o:["Du genièvre","Du carvi ou de l'aneth","De l'anis","De la coriandre"],a:1,e:"Le carvi et/ou l'aneth, ses épices signatures."},
+ {c:"Spiritueux",q:"En quelle année l'absinthe a-t-elle été interdite en France ?",o:["1895","1915","1925","1940"],a:1,e:"En 1915. Elle a été réautorisée au début des années 2010."},
+ {c:"Spiritueux",q:"Le pastis de Marseille associe l'anis à :",o:["La menthe","La réglisse","Le fenouil","Le carvi"],a:1,e:"La réglisse. Il titre environ 45 % et se trouble à l'eau."},
+ {c:"Spiritueux",q:"Comment appelle-t-on le trouble laiteux du pastis à l'ajout d'eau ?",o:["La louche","Le voile","Le flou","La brume"],a:0,e:"« La louche », due aux huiles essentielles d'anis qui précipitent."},
+ {c:"Vins & apéritifs",q:"De quelle ville d'Espagne le Xérès (sherry) tire-t-il son nom ?",o:["Séville","Jerez de la Frontera","Malaga","Cadix"],a:1,e:"Jerez de la Frontera, en Andalousie."},
+ {c:"Vins & apéritifs",q:"Quel sherry très sec vieillit sous un voile de levures (« flor ») ?",o:["L'Oloroso","Le Fino","Le Pedro Ximénez","Le Cream"],a:1,e:"Le Fino (et la Manzanilla), protégés de l'oxydation par la flor."},
+ {c:"Vins & apéritifs",q:"Quel sherry est un vin très doux issu de raisins séchés ?",o:["Le Fino","L'Amontillado","Le Pedro Ximénez","La Manzanilla"],a:2,e:"Le Pedro Ximénez (PX), sirupeux et sombre."},
+ {c:"Vins & apéritifs",q:"De quelle vallée portugaise provient le Porto ?",o:["Le Douro","Le Tage","Le Minho","L'Alentejo"],a:0,e:"La vallée du Douro, au nord du Portugal."},
+ {c:"Vins & apéritifs",q:"Quelle ville italienne est le berceau du vermouth ?",o:["Milan","Turin","Venise","Florence"],a:1,e:"Turin, où Antonio Benedetto Carpano le formalise en 1786."},
+ {c:"Vins & apéritifs",q:"Le Lillet est un apéritif à base de vin produit près de quelle ville ?",o:["Bordeaux","Lyon","Marseille","Reims"],a:0,e:"À Podensac, près de Bordeaux. Vin aromatisé au quinquina."},
+ {c:"Vins & apéritifs",q:"Quel système d'assemblage par paliers caractérise le sherry ?",o:["La solera","La méthode champenoise","Le perpétuel","Le ouillage"],a:0,e:"La solera, qui mêle les millésimes par fractions successives."},
+ {c:"Vins & apéritifs",q:"Le Dubonnet et le Byrrh sont des apéritifs français aromatisés à :",o:["L'armoise","Le quinquina","L'anis","La gentiane"],a:1,e:"Le quinquina, d'où leur amertume caractéristique."},
+ {c:"Vins & apéritifs",q:"Quel composant donne sa couleur orange à l'Aperol Spritz ?",o:["Le Campari","L'Aperol","Le Cynar","Le Select"],a:1,e:"L'Aperol. Proportions classiques : 3 prosecco, 2 Aperol, 1 trait de soda."},
+ {c:"Vins & apéritifs",q:"Le Cynar, amer italien, est élaboré à partir de quel légume ?",o:["L'artichaut","La rhubarbe","Le céleri","Le fenouil"],a:0,e:"L'artichaut (Cynara scolymus), d'où son nom."},
+ {c:"Amers & liqueurs",q:"De quelle ville française provient la crème de cassis du Kir ?",o:["Lyon","Dijon","Reims","Grenoble"],a:1,e:"Dijon, en Bourgogne."},
+ {c:"Amers & liqueurs",q:"Le Kir associe la crème de cassis à quel vin ?",o:["Un vin rouge","Un vin blanc (aligoté)","Un champagne","Un rosé"],a:1,e:"Un vin blanc, l'aligoté de Bourgogne. Au champagne, c'est un Kir Royal."},
+ {c:"Amers & liqueurs",q:"Le Kir doit son nom à :",o:["Un cépage","Un chanoine maire de Dijon","Un village","Un roi"],a:1,e:"Le chanoine Félix Kir, ancien maire de Dijon."},
+ {c:"Amers & liqueurs",q:"Le marasquin (maraschino) est une liqueur issue de quel fruit ?",o:["La cerise marasque","La prune","L'abricot","La framboise"],a:0,e:"La cerise marasque, dont on distille aussi les noyaux."},
+ {c:"Amers & liqueurs",q:"Le curaçao tire son nom :",o:["D'un fruit","D'une île des Caraïbes","D'un botaniste","D'une couleur"],a:1,e:"De l'île de Curaçao, où poussent les oranges amères laraha."},
+ {c:"Amers & liqueurs",q:"Le falernum est un sirop épicé typique de quelle région ?",o:["Les Caraïbes","La Méditerranée","L'Asie","Les Andes"],a:0,e:"Les Caraïbes. Gingembre, clou de girofle, amande, citron vert."},
+ {c:"Amers & liqueurs",q:"L'orgeat est un sirop à base d'amande et de :",o:["Vanille","Eau de fleur d'oranger","Miel","Cannelle"],a:1,e:"D'eau de fleur d'oranger. Indispensable au Mai Tai."},
+ {c:"Amers & liqueurs",q:"Le Drambuie associe whisky écossais, miel et :",o:["Des herbes","Du café","De l'orange","De la vanille"],a:0,e:"Des herbes et épices. Avec du scotch seul, il donne le Rusty Nail."},
+ {c:"Amers & liqueurs",q:"D'où l'amaretto tire-t-il son goût d'amande ?",o:["Des amandes ou noyaux d'abricot","Des noisettes","Des pistaches","Des noix"],a:0,e:"D'amandes ou de noyaux d'abricot. Marque emblématique : Disaronno."},
+ {c:"Amers & liqueurs",q:"Le Frangelico est une liqueur italienne à base de :",o:["Noisette","Café","Réglisse","Châtaigne"],a:0,e:"De noisette, dans une bouteille en forme de moine."},
+ {c:"Amers & liqueurs",q:"Le Kahlúa, base du White Russian, est une liqueur de :",o:["Cacao","Café","Vanille","Caramel"],a:1,e:"De café, produite au Mexique."},
+ {c:"Amers & liqueurs",q:"Dans quelle ville le Cointreau est-il produit ?",o:["Angers","Cognac","Bordeaux","Nantes"],a:0,e:"À Angers. C'est un triple sec titrant 40 %."},
+ {c:"Amers & liqueurs",q:"Le Galliano parfume notamment quel cocktail ?",o:["Le Harvey Wallbanger","Le White Russian","Le Negroni","Le Spritz"],a:0,e:"Le Harvey Wallbanger (vodka, orange, Galliano)."},
+ {c:"Amers & liqueurs",q:"L'Aperol a été créé en 1919 dans quelle ville italienne ?",o:["Milan","Padoue","Turin","Bologne"],a:1,e:"À Padoue, par les frères Barbieri. Il titre environ 11 %."},
+ {c:"Recettes",q:"Le Rob Roy est l'équivalent du Manhattan réalisé avec :",o:["Du bourbon","Du scotch","Du rye","Du rhum"],a:1,e:"Du scotch whisky, d'où son nom écossais."},
+ {c:"Recettes",q:"Qu'est-ce qui distingue un Gibson d'un Martini ?",o:["Il est garni d'un oignon","Il est sans vermouth","Il est servi long","Il est sucré"],a:0,e:"Le Gibson se garnit d'un petit oignon au vinaigre."},
+ {c:"Recettes",q:"Le White Russian associe vodka, Kahlúa et :",o:["De la crème","Du lait concentré","Du cola","De l'eau gazeuse"],a:0,e:"De la crème. Sans crème, c'est un Black Russian."},
+ {c:"Recettes",q:"Combien d'alcools différents entrent dans un Long Island Iced Tea ?",o:["Trois","Quatre","Cinq","Six"],a:2,e:"Cinq : vodka, gin, rhum, tequila et triple sec, allongés de cola. Sans thé."},
+ {c:"Recettes",q:"Le Tequila Sunrise doit son dégradé à quel ingrédient versé en dernier ?",o:["La grenadine","Le curaçao bleu","Le jus de citron","L'orgeat"],a:0,e:"La grenadine, qui coule au fond et crée le « lever de soleil »."},
+ {c:"Recettes",q:"Quel trio compose le shooter étagé B-52 ?",o:["Kahlúa, Baileys, Grand Marnier","Vodka, Kahlúa, crème","Rhum, curaçao, citron","Tequila, café, crème"],a:0,e:"Kahlúa, Baileys puis Grand Marnier, versés par densité décroissante."},
+ {c:"Recettes",q:"Le Paper Plane assemble à parts égales bourbon, citron, Aperol et :",o:["Amaro Nonino","Campari","Fernet","Chartreuse"],a:0,e:"L'Amaro Nonino. Quatre quarts équilibrés, signés Sam Ross."},
+ {c:"Recettes",q:"Le Naked and Famous est une variation du Last Word à base de :",o:["Gin","Mezcal","Rhum","Pisco"],a:1,e:"Le mezcal, avec Chartreuse jaune, Aperol et citron vert à parts égales."},
+ {c:"Recettes",q:"Le Vieux Carré mêle rye, cognac, vermouth doux, bitters et :",o:["De la Bénédictine","De la Chartreuse","Du curaçao","De l'absinthe"],a:0,e:"De la Bénédictine. Né au Carousel Bar de l'Hotel Monteleone."},
+ {c:"Recettes",q:"Le Hurricane, de La Nouvelle-Orléans, marie rhum et :",o:["Fruit de la passion","Ananas","Pamplemousse","Coco"],a:0,e:"Le fruit de la passion. Popularisé chez Pat O'Brien's."},
+ {c:"Recettes",q:"Le Bee's Knees, cocktail de la Prohibition, sucre le gin sour avec :",o:["Du sirop d'érable","Du miel","De l'agave","De la cassonade"],a:1,e:"Du miel, qui masquait les gins de mauvaise qualité."},
+ {c:"Recettes",q:"Le Clover Club doit sa couleur rosée et sa mousse à :",o:["Framboise et blanc d'œuf","Grenadine et crème","Fraise et soda","Betterave et citron"],a:0,e:"Au sirop de framboise et au blanc d'œuf. Cocktail de Philadelphie."},
+ {c:"Recettes",q:"Le Jungle Bird associe rhum brun, jus d'ananas et :",o:["Campari","Aperol","Curaçao","Chartreuse"],a:0,e:"Le Campari, dont l'amertume tranche avec l'ananas. Né en Malaisie."},
+ {c:"Recettes",q:"Le Painkiller de Pusser's mêle rhum, ananas, orange et :",o:["Crème de coco","Orgeat","Citron vert","Grenadine"],a:0,e:"De la crème de coco, saupoudré de muscade. Originaire des Îles Vierges britanniques."},
+ {c:"Recettes",q:"La New York Sour est un whiskey sour coiffé de :",o:["Mousse d'œuf","Un float de vin rouge","Bitters","Champagne"],a:1,e:"D'un float de vin rouge qui flotte sur le cocktail."},
+ {c:"Recettes",q:"Le Breakfast Martini de Salvatore Calabrese contient une cuillère de :",o:["Marmelade d'orange","Miel","Confiture de fraise","Sirop d'érable"],a:0,e:"De marmelade d'orange, avec gin, Cointreau et citron."},
+ {c:"Recettes",q:"La Mimosa associe le champagne à quel jus ?",o:["Pamplemousse","Orange","Ananas","Cranberry"],a:1,e:"Le jus d'orange, à parts égales avec le champagne."},
+ {c:"Recettes",q:"Le Mary Pickford, cocktail cubain, mêle rhum, ananas, marasquin et :",o:["Grenadine","Citron vert","Curaçao","Angostura"],a:0,e:"De la grenadine. Nommé d'après la star du cinéma muet."},
+ {c:"Familles",q:"Le Spritz est un apéritif emblématique de quelle région ?",o:["La Vénétie","La Toscane","La Sicile","La Lombardie"],a:0,e:"La Vénétie, dans le nord-est de l'Italie."},
+ {c:"Familles",q:"Quelle famille se définit par spiritueux, œuf entier et sucre ?",o:["Le Sour","Le Flip","Le Fizz","Le Sling"],a:1,e:"Le Flip, onctueux grâce à l'œuf entier."},
+ {c:"Familles",q:"Un « highball » se définit avant tout par :",o:["Un alcool allongé d'un soft gazeux","Un mélange tout-alcool","Un cocktail crémeux","Un shot"],a:0,e:"Un spiritueux allongé d'une boisson gazeuse, sur glace."},
+ {c:"Culture",q:"Dans quelle ville se tient le festival professionnel « Tales of the Cocktail » ?",o:["Las Vegas","La Nouvelle-Orléans","Londres","Miami"],a:1,e:"La Nouvelle-Orléans, berceau de nombreux classiques."},
+ {c:"Culture",q:"Comment appelle-t-on le gin frelaté fabriqué clandestinement sous la Prohibition ?",o:["Le bathtub gin","Le moonshine","Le rotgut","Le hooch"],a:0,e:"Le « bathtub gin », littéralement gin de baignoire."},
+ {c:"Culture",q:"Quel rituel italien désigne l'apéritif accompagné de bouchées ?",o:["L'aperitivo","Il digestivo","La merenda","Lo spuntino"],a:0,e:"L'aperitivo, moment de convivialité d'avant-dîner."},
+ {c:"Culture",q:"En quelle année l'IBA a-t-elle tenu sa première compétition internationale ?",o:["1951","1955","1961","1970"],a:1,e:"En 1955, à Amsterdam. Elle deviendra le World Cocktail Championship."},
+ {c:"Culture",q:"Que signifie « Mai Tai » (maita'i) en tahitien ?",o:["Bon, excellent","Soleil","Paradis","Fête"],a:0,e:"« Bon » ou « excellent ». Trader Vic aurait lancé « Mai Tai roa ae »."},
+ {c:"Verrerie",q:"Dans quel verre à pied, popularisé par le cinéma, sert-on les cocktails « up » ?",o:["Le Nick & Nora","Le tumbler","Le highball","Le hurricane"],a:0,e:"Le verre Nick & Nora, du nom des héros du film The Thin Man."},
+ {c:"Verrerie",q:"Que signifie servir un cocktail « up » ?",o:["Sur glace","Sans glace, dans un verre à pied","Avec un soda","Très fort"],a:1,e:"Filtré sans glace, dans un verre à pied rafraîchi."},
+ {c:"Verrerie",q:"Quel verre ballon est dédié à la dégustation du cognac ?",o:["Le snifter","La flûte","Le tumbler","La coupe"],a:0,e:"Le snifter (verre tulipe à cognac), qui concentre les arômes."},
+ {c:"Verrerie",q:"Quel verre haut et étroit est réservé aux vins effervescents ?",o:["La coupe","La flûte","Le tumbler","Le snifter"],a:1,e:"La flûte, qui préserve les bulles."},
+ {c:"Verrerie",q:"Le verre « copa » (tulipe) est aujourd'hui associé à quel cocktail ?",o:["Le Gin Tonic","Le Mojito","Le Negroni","Le Martini"],a:0,e:"Le Gin Tonic moderne, sa large ouverture libérant les arômes."},
+ {c:"Techniques",q:"Quelle dilution apporte approximativement un bon shake ?",o:["5 %","20 à 25 %","50 %","Plus de 60 %"],a:1,e:"Environ 20 à 25 % d'eau, qui équilibre l'alcool."},
+ {c:"Techniques",q:"En quoi consiste un « reverse dry shake » ?",o:["Frapper avec glace puis sans","Ne jamais utiliser de glace","Frapper deux fois avec glace","Mélanger sans frapper"],a:0,e:"On frappe avec glace, puis sans, pour une mousse plus dense."},
+ {c:"Techniques",q:"Que désigne le « fat washing » ?",o:["Infuser un spiritueux avec un corps gras","Rincer le verre","Filtrer au charbon","Laver la glace"],a:0,e:"Infuser un alcool avec un gras puis le figer pour le retirer."},
+ {c:"Techniques",q:"Le « milk punch » clarifié utilise le lait pour :",o:["Adoucir le sucre","Clarifier et assouplir le mélange","Colorer en blanc","Allonger le volume"],a:1,e:"Le lait caillé piège les impuretés : le liquide devient limpide et soyeux."},
+ {c:"Techniques",q:"À quoi sert un « rinse » comme dans le Sazerac ?",o:["Parfumer le verre d'un trait d'alcool","Nettoyer le verre","Refroidir la glace","Diluer le cocktail"],a:0,e:"On enrobe l'intérieur du verre d'absinthe que l'on vide ensuite."},
+ {c:"Outils",q:"Quel ustensile sert à étager les liqueurs par densité ?",o:["Le dos de la cuillère de bar","Le jigger","La passette","Le muddler"],a:0,e:"Le dos de la cuillère de bar, sur lequel on fait glisser le liquide."},
+ {c:"Outils",q:"À quoi sert un « channel knife » (couteau à canneler) ?",o:["Tailler un long zeste en spirale","Piler la glace","Doser l'alcool","Trancher les fruits"],a:0,e:"À prélever un long ruban de zeste pour la garniture."},
+ {c:"Outils",q:"Quel sac en toile sert à concasser la glace au maillet ?",o:["Le Lewis bag","Le shaker bag","Le julep bag","Le crush bag"],a:0,e:"Le Lewis bag, qui absorbe l'eau de fonte pendant le concassage."},
+ {c:"Outils",q:"Quel verre épais sert à mélanger (stir) les cocktails tout-alcool ?",o:["Le verre à mélange","Le shaker","Le verre doseur","La carafe"],a:0,e:"Le verre à mélange (mixing glass), souvent à motif japonais Yarai."},
+ {c:"Histoire",q:"Quel terme désigne, sous la Prohibition, les transporteurs d'alcool illégal ?",o:["Les bootleggers","Les sommeliers","Les cantineros","Les distillers"],a:0,e:"Les bootleggers, contrebandiers de l'alcool."},
+ {c:"Histoire",q:"À quelle période le mot « mixologist » est-il apparu ?",o:["Au 17e siècle","Au 19e siècle","Dans les années 1980","Dans les années 2000"],a:1,e:"Au 19e siècle, bien avant la mode récente du terme."},
+ {c:"Histoire",q:"Quelle guilde américaine de barmen a été fondée en 1948 ?",o:["L'USBG","L'IBA","Le UKBG","L'ABF"],a:0,e:"L'USBG (United States Bartenders' Guild)."},
+ {c:"Histoire",q:"Quel club new-yorkais revendique la création du Manhattan ?",o:["Le 21 Club","Le Manhattan Club","Le Stork Club","Le Cotton Club"],a:1,e:"Le Manhattan Club, selon la version la plus répandue."},
+ {c:"Histoire",q:"Le Daiquiri tire son nom :",o:["D'un cépage","D'une plage et mine cubaines","D'un barman","D'un navire"],a:1,e:"D'une plage et d'une mine de fer près de Santiago de Cuba."},
+ {c:"Histoire",q:"Le cocktail El Presidente est un classique de quel pays ?",o:["Le Mexique","Cuba","Le Pérou","Le Brésil"],a:1,e:"Cuba, à l'époque de l'âge d'or de La Havane."},
+ {c:"Histoire",q:"Quel mouvement social a précédé la Prohibition américaine ?",o:["La tempérance","Le suffragisme","Le prohibitionnisme fiscal","La contre-culture"],a:0,e:"Le mouvement de tempérance, militant contre l'alcool."},
+ {c:"Histoire",q:"Quel mot anglais désigne l'alcool distillé clandestinement ?",o:["Le moonshine","Le highball","Le jigger","Le punch"],a:0,e:"Le moonshine, distillé « au clair de lune » pour échapper au fisc."},
+ {c:"Anciens",q:"Quel cocktail chaud et flambé fut un numéro de bar célèbre au 19e siècle ?",o:["Le Blue Blazer","L'Irish Coffee","Le Tom & Jerry","Le Grog"],a:0,e:"Le Blue Blazer de Jerry Thomas, arc de whisky enflammé."},
+ {c:"Anciens",q:"Le Tom & Jerry, popularisé par Jerry Thomas, est une boisson chaude à base de :",o:["Œuf, lait et spiritueux","Café et whisky","Thé et rhum","Vin chaud"],a:0,e:"Un mélange chaud d'œuf battu, de lait et de spiritueux épicé."},
+ {c:"Spiritueux",q:"La mention « Extra Añejo » d'une tequila correspond à un vieillissement de :",o:["Moins d'un an","Plus de 3 ans","Exactement 2 ans","6 mois"],a:1,e:"Plus de trois ans en fût."},
+ {c:"Spiritueux",q:"Combien d'États mexicains sont autorisés à produire de la tequila ?",o:["Un seul","Cinq","Dix","Toute la nation"],a:1,e:"Cinq, dont le Jalisco qui en concentre l'essentiel."},
+ {c:"Spiritueux",q:"Que signifie « bottled in bond » pour un whiskey américain ?",o:["Vieilli sous contrôle, 100 proof, 4 ans minimum","Sans colorant","Vieilli 10 ans","Issu d'un seul fût"],a:0,e:"Une distillerie, une saison, au moins 4 ans, embouteillé à 100 proof sous contrôle fédéral."},
+ {c:"Spiritueux",q:"Quel terme espagnol désigne le rhum de style cubain ou portoricain ?",o:["Ron","Rhum","Rum","Aguardiente"],a:0,e:"« Ron », style généralement plus léger et sec."},
+ {c:"Spiritueux",q:"Le mezcal est souvent « 100 % agave » car il n'admet pas, contrairement à certaines tequilas :",o:["De sucres ajoutés","De vieillissement","De distillation","De fermentation"],a:0,e:"Les sucres d'appoint des tequilas « mixto » (51 % agave)."},
+ {c:"Spiritueux",q:"L'eau-de-vie « Poire Williams » est obtenue par distillation de :",o:["Poires","Pommes","Coings","Prunes"],a:0,e:"De poires Williams fermentées."},
+ {c:"Amers & liqueurs",q:"De quelle plante alpine est tiré le génépi ?",o:["L'armoise des montagnes","La gentiane","L'edelweiss","La verveine"],a:0,e:"D'armoises alpines (Artemisia), d'où son amertume herbacée."},
+ {c:"Amers & liqueurs",q:"Le Tia Maria est une liqueur de :",o:["Café","Noisette","Orange","Réglisse"],a:0,e:"De café, autre grande liqueur de café avec le Kahlúa."},
+ {c:"Amers & liqueurs",q:"Le limoncello est une liqueur traditionnelle de quelle région d'Italie ?",o:["Le Piémont","La côte amalfitaine","La Toscane","La Vénétie"],a:1,e:"La côte amalfitaine et le golfe de Naples, à base de citrons."},
+ {c:"Amers & liqueurs",q:"Que désigne « B&B » comme digestif ?",o:["Bénédictine et Brandy","Bourbon et Bitter","Bitter et Bénédictine","Brandy et Byrrh"],a:0,e:"Bénédictine additionnée de brandy."},
+ {c:"Amers & liqueurs",q:"La couleur rouge historique du Campari provenait de :",o:["La cochenille (carmin)","La betterave","La grenade","Un colorant de synthèse"],a:0,e:"Du carmin de cochenille, aujourd'hui remplacé par un colorant."},
+ {c:"Amers & liqueurs",q:"Le White Negroni remplace le Campari et le vermouth rouge par :",o:["Suze et Lillet blanc","Aperol et prosecco","Cynar et sherry","Fernet et vermouth dry"],a:0,e:"La Suze (gentiane) et le Lillet blanc, version plus pâle et amère."},
+ {c:"Recettes",q:"La Tommy's Margarita remplace le triple sec par :",o:["Du sirop d'agave","Du miel","Du curaçao","Du sucre"],a:0,e:"Du sirop d'agave. Créée par Julio Bermejo à San Francisco."},
+ {c:"Recettes",q:"Le Old Pal associe rye, Campari et :",o:["Vermouth dry","Vermouth rouge","Soda","Citron"],a:0,e:"Du vermouth dry, cousin sec du Boulevardier."},
+ {c:"Recettes",q:"Le Between the Sheets ajoute du rhum à la base du Sidecar. Vrai ou faux ?",o:["Vrai","Faux"],a:0,e:"Vrai : c'est un Sidecar (cognac, triple sec, citron) renforcé de rhum blanc."},
+ {c:"Recettes",q:"Le Rusty Nail associe scotch et quelle liqueur écossaise ?",o:["Le Drambuie","Le Glayva","Le Baileys","Le Cynar"],a:0,e:"Le Drambuie (whisky, miel, herbes)."}
+];
+
+/* ----- état du quiz ----- */
+let pool=[], poolIdx=[], idx=0, score=0, answered=false;
+let mastered=new Set();   // réussies : définitivement écartées
+let wrong=new Set();      // ratées : reproposées en priorité au tirage suivant
+const TOTAL=25; // questions max par tirage
+
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startQuiz(){
+  // toutes les questions sauf celles déjà maîtrisées (réussies une fois)
+  const avail=QUESTIONS.map((_,i)=>i).filter(i=>!mastered.has(i));
+  if(avail.length===0){ showMastery(); return; }
+  // on sert d'abord les questions ratées, puis les neuves
+  const wrongList=shuffle(avail.filter(i=>wrong.has(i)));
+  const freshList=shuffle(avail.filter(i=>!wrong.has(i)));
+  poolIdx=wrongList.concat(freshList).slice(0,TOTAL);
+  pool=poolIdx.map(i=>QUESTIONS[i]);
+  idx=0;score=0;answered=false;
+  renderQuestion();
+}
+function resetCycle(){ mastered=new Set(); wrong=new Set(); startQuiz(); }
+
+function renderQuestion(){
+  const stage=document.getElementById('quiz-stage');
+  const q=pool[idx];
+  const pct=Math.round((idx/pool.length)*100);
+  stage.innerHTML=`
+   <div class="quiz-card">
+     <div class="q-meta"><span class="q-cat">${q.c}</span><span>Question ${idx+1} / ${pool.length}</span></div>
+     <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+     <div class="q-text">${q.q}</div>
+     <div class="opts" id="opts">
+       ${q.o.map((opt,i)=>`<button class="opt" data-i="${i}" onclick="choose(${i})"><span class="letter">${"ABCD"[i]}</span><span>${opt}</span></button>`).join('')}
+     </div>
+     <div class="explain" id="explain"><b>Pour mémoire</b>${q.e}</div>
+     <div class="q-nav"><button class="btn" id="next" onclick="next()" disabled>Suivant</button></div>
+   </div>`;
+}
+
+function choose(i){
+  if(answered)return;
+  answered=true;
+  const q=pool[idx];
+  const real=poolIdx[idx];
+  const opts=document.querySelectorAll('#opts .opt');
+  opts.forEach(b=>{b.disabled=true;const bi=+b.dataset.i;if(bi===q.a)b.classList.add('good');else if(bi===i)b.classList.add('bad');});
+  if(i===q.a){ score++; mastered.add(real); wrong.delete(real); }
+  else { wrong.add(real); }
+  document.getElementById('explain').classList.add('show');
+  const nx=document.getElementById('next');
+  nx.disabled=false;
+  nx.textContent = idx===pool.length-1 ? "Voir le score" : "Suivant";
+}
+
+function next(){
+  if(idx<pool.length-1){idx++;answered=false;renderQuestion();}
+  else showResult();
+}
+
+function showResult(){
+  const stage=document.getElementById('quiz-stage');
+  const pct=Math.round((score/pool.length)*100);
+  let tier,verdict;
+  if(pct>=85){tier="tier-gold";verdict="Niveau finaliste";}
+  else if(pct>=60){tier="tier-ok";verdict="Solide, peaufine les détails";}
+  else{tier="tier-low";verdict="Reprends la fiche avant demain";}
+  const tot=QUESTIONS.length, mas=mastered.size, todo=wrong.size;
+  const covLine=`Maîtrisées : ${mas} / ${tot}. À revoir : ${todo}. Le tirage suivant repropose d'abord les questions ratées.`;
+  stage.innerHTML=`
+   <div class="quiz-card result">
+     <div class="score-num">${score}<span>/${pool.length}</span></div>
+     <div class="verdict ${tier}">${verdict}</div>
+     <p>${pct} % de bonnes réponses sur ce tirage.<br><span style="font-size:14px;color:var(--or)">${covLine}</span></p>
+     <button class="btn" onclick="startQuiz()">Tirage suivant</button>
+     <button class="btn ghost" style="margin-left:10px" onclick="resetCycle()">Repartir de zéro</button>
+   </div>`;
+}
+function showMastery(){
+  const stage=document.getElementById('quiz-stage');
+  stage.innerHTML=`
+   <div class="quiz-card result">
+     <div class="score-num">★</div>
+     <div class="verdict tier-gold">Banque maîtrisée</div>
+     <p>Tu as répondu juste à l'ensemble des ${QUESTIONS.length} questions, aucune ne reste à revoir.</p>
+     <button class="btn" onclick="resetCycle()">Tout recommencer</button>
+     <button class="btn ghost" style="margin-left:10px" onclick="goView('fiche')">Relire la fiche</button>
+   </div>`;
+}
+
+/* ----- navigation onglets ----- */
+function goView(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.view===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.getElementById(name).classList.add('on');
+  if(name==='quiz' && !document.querySelector('#quiz .quiz-card')) startQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>goView(t.dataset.view)));
+
+renderFiche();
+</script>
+</body>
+</html>
