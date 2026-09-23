@@ -388,3 +388,6 @@ table.bt{width:100%;border-collapse:collapse;background:#fff;border:2px solid va
 .main,#stage{min-width:0}
 .recap .l .n{min-width:0}
 @media(max-width:880px){ .app{grid-template-columns:minmax(0,1fr)} }
+
+/* Liens présentés comme des boutons (e-mail) */
+a.btn,a.tool{display:inline-block;text-decoration:none;color:var(--ink)}

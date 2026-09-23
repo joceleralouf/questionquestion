@@ -3,11 +3,12 @@
    Module chargé après app.js. Il se branche sur trois fonctions d'app.js :
    go() pour la nouvelle page, result() pour envoyer le score, renderRail()
    pour afficher le prénom, record() pour compter les bonnes réponses.
-   Le score = 1 point par question réussie au moins une fois (maximum = nombre de questions).
+   Le score = 1 point par question réussie au moins une fois EN ÉVALUATION (maximum = nombre de questions).
+   Les entraînements (QCM, réponse libre, défi, exercices) ne comptent pas.
    ===================================================================== */
 (function(){
 const PKEY = "culturebar-profil";
-const TOTAL = BANK.length;
+let TOTAL = BANK.length;   // recalculé : les questions de la communauté s'ajoutent en cours de route
 let P = null;                // profil de cet appareil : {id, secret, prenom, public}
 let board = null, boardErr = "", boardAt = 0, syncTimer = null, lastSent = null;
 
@@ -28,13 +29,13 @@ function loadP(){
   saveP();
 }
 function saveP(){ try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch(e){} }
-/* Questions réussies au moins une fois : gardées dans S.j (donc incluses dans la sauvegarde).
-   Au premier passage, on reprend tout ce qui a déjà été répondu juste (case ≥ 1 de la répétition espacée). */
+/* Questions réussies au moins une fois en évaluation : gardées dans S.je (donc incluses dans la sauvegarde). */
+let evalPts = 0;
 function justes(){
-  if (!Array.isArray(S.j)) { S.j = BANK.filter(q => S.L[q.id] && S.L[q.id][0] >= 1).map(q => q.id); save(); }
-  return S.j;
+  if (!Array.isArray(S.je)) { S.je = []; save(); }
+  return S.je;
 }
-function addJuste(id){ const j = justes(); if (!j.includes(id)) { j.push(id); save(); } }
+function addJuste(id){ const j = justes(); if (!j.includes(id)) { j.push(id); evalPts++; save(); } }
 function sues(){ const ids = new Set(justes()); return BANK.filter(q => ids.has(q.id)).length; }
 function cleanName(s){ return String(s || "").replace(/\s+/g, " ").trim().slice(0, 20); }
 
@@ -51,6 +52,7 @@ async function rpc(fn, body){
   if (!r.ok) throw new Error("HTTP "+r.status);
 }
 async function sync(force){
+  TOTAL = BANK.length;
   if (!configured() || !P.prenom || !P.public) return;
   const n = sues(), key = P.prenom+"|"+n;
   if (!force && key === lastSent) return;
@@ -79,7 +81,7 @@ function askName(first){
   document.getElementById("modal").innerHTML =
     '<div class="modal" '+(first?'':'onclick="if(event.target===this)closeModal()"')+'><div class="box2 namebox" style="--pc:var(--stylo)">'+
     '<div class="mh"><h3>'+(first?"Bienvenue dans le cahier !":"Changer de prénom")+'</h3>'+(first?'':'<button onclick="closeModal()">Fermer</button>')+'</div>'+
-    '<div class="nb-body seyes"><label for="pn">Comment tu t\'appelles ?</label>'+
+    '<div class="nb-body"><label for="pn">Comment tu t\'appelles ?</label>'+
     '<input id="pn" maxlength="20" autocomplete="given-name" placeholder="Ton prénom" value="'+esc(P.prenom||"")+'">'+
     '<label class="ck"><input type="checkbox" id="pp" '+(P.public?"checked":"")+'> Apparaître dans le classement partagé</label>'+
     '<p class="nb-note">Seuls ton prénom et ton nombre de points sont envoyés. Ta progression détaillée reste sur ce téléphone.</p>'+
@@ -107,6 +109,7 @@ function ago(t){
   const d = Math.round(h/24); return "il y a "+d+" j";
 }
 async function renderClassement(refetch){
+  TOTAL = BANK.length;
   view = "classement"; renderRail();
   const st = document.getElementById("stage");
   if (!configured()) {
@@ -126,7 +129,7 @@ async function renderClassement(refetch){
   const podium = rows.slice(0,3);
   st.innerHTML = '<div class="sheet seyes lb">'+
     '<div class="bh">Tableau d\'honneur</div>'+
-    '<div class="bsub">1 point par question réussie au moins une fois, '+TOTAL+' points au maximum. '+(boardAt?'Mis à jour '+ago(boardAt)+'.':'')+'</div>'+
+    '<div class="bsub">1 point par question réussie en évaluation (« Sortez une feuille ! »), '+TOTAL+' points au maximum. Les entraînements ne comptent pas. '+(boardAt?'Mis à jour '+ago(boardAt)+'.':'')+'</div>'+
     (boardErr ? '<div class="empty">'+esc(boardErr)+'</div>' : '')+
     (!P.public ? '<div class="lb-info">Tu n\'apparais pas dans le classement. <button class="tool" onclick="CB.rename()">Changer</button></div>' :
       (myRank >= 0 ? '<div class="lb-me">Tu es <b>'+(myRank+1)+'<sup>'+(myRank?"e":"er")+'</sup></b> sur '+rows.length+', avec <b>'+rows[myRank].sues+'</b> point'+(rows[myRank].sues>1?'s':'')+' sur '+TOTAL+'.</div>' :
@@ -143,14 +146,22 @@ async function renderClassement(refetch){
 }
 
 /* ---------- Branchements sur app.js ---------- */
-const _go = go, _result = result, _renderRail = renderRail, _record = record;
-record = function(q, good){ _record(q, good); if (good) addJuste(q.id); };
+const _go = go, _result = result, _renderRail = renderRail, _record = record, _start = start;
+record = function(q, good){ const ev = session && session.mode === "eval"; _record(q, good); if (good && ev) addJuste(q.id); };
+start = function(mode){ evalPts = 0; _start(mode); };
 go = function(v){
   if (v !== "classement") return _go(v);
   closeModal(); clearInterval(tick); session = null; view = "classement";
   renderClassement(!board || Date.now() - boardAt > 60000); toStage();
 };
-result = function(){ _result(); syncSoon(); };
+result = function(){
+  const ev = session && session.mode === "eval";
+  _result(); syncSoon();
+  if (ev) {
+    const g = document.querySelector("#stage .result .gain");
+    if (g) g.insertAdjacentHTML("afterend", '<div class="gain">🏆 +'+evalPts+' point'+(evalPts>1?'s':'')+' au classement ('+sues()+' sur '+TOTAL+').</div>');
+  }
+};
 renderRail = function(){
   _renderRail();
   const w = document.getElementById("who"); if (w) w.textContent = P && P.prenom ? P.prenom : "à remplir";

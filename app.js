@@ -6,7 +6,7 @@ const PC={h:"var(--h)",c:"var(--c)",p:"var(--p)"};
 const PNAME=Object.fromEntries(PARTS.map(p=>[p.k,p.n]));
 const LVN={1:"Facile",2:"Moyen",3:"Expert"};
 const STARS={1:"★",2:"★★",3:"★★★"};
-const QMODES=["interro","defi","libre"];
+const QMODES=["eval","interro","defi","libre"];
 const IDS=new Set(BANK.map(q=>q.id));
 const BYID=Object.fromEntries(BANK.map(q=>[q.id,q]));
 const IMAGES=[["🍋","Le zeste d'or"],["🧊","Le glaçon parfait"],["🍸","La coupe de cristal"],["🥃","Le rocks du patron"],["🍒","La cerise confite"],["🌿","La menthe fraîche"],["🥥","La noix de coco tiki"],["🍍","L'ananas royal"],["🫒","L'olive du Martini"],["🍊","L'orange amère"],["🧂","Le rebord salé"],["🍯","Le miel du Bee's Knees"],["☕","L'espresso de minuit"],["🥚","Le blanc d'œuf"],["🌶️","Le piment du Bloody"],["🍾","Le sabre du hussard"],["🥂","La flûte de Reims"],["🍹","Le parasol tiki"],["🐓","Le coq de Peychaud"],["🎩","Le chapeau du Professeur"],["🔥","Le Blue Blazer"],["⚓","Le grog de l'amiral"],["🗽","Le Manhattan Club"],["🌴","La plage de Daiquirí"],["🏝️","L'île de Tahiti"],["🦃","Le dindon sauvage"],["🌵","L'agave bleu"],["🍇","La grappe de Cognac"],["🍏","La pomme du Pays d'Auge"],["🌾","L'épi de seigle"],["🎷","Le jazz de La Nouvelle-Orléans"],["🐇","Le lapin du Dead Rabbit"],["📞","La cabine du PDT"],["🥄","La cuillère de bar"],["🌸","La violette de l'Aviation"],["🏆","La coupe de l'IBA"],["👑","La couronne du Kir Royale"],["📚","Le Savoy Cocktail Book"],["⭐","L'étoile du comptoir"],["🎓","Le diplôme de mixologue"]];
@@ -131,7 +131,10 @@ function home(){
   const streakAlive=S.dj.last===today()||S.dj.last===yesterday();
   document.getElementById("stage").innerHTML=
     '<div class="sheet seyes hero"><h3>Interro <span>surprise</span> !</h3>'+
-    '<p>Choisis une matière ou coche tes chapitres. Une bonne réponse fait revenir la question plus tard (1, 3, 7, 21 puis 60 jours) ; une erreur la fait revenir tout de suite. Une question est « sue » après trois bonnes réponses espacées.</p>'+
+    '<div class="evalbox"><div class="et2"><h4>L\'évaluation</h4><p>'+S.len+' questions tirées au hasard dans toutes les matières, chrono de 20 s imposé. <b>Seules les bonnes réponses de l\'évaluation comptent pour le classement.</b></p></div>'+
+    '<button class="btn" onclick="start(\'eval\')">Sortez une feuille !</button></div>'+
+    '<h4 class="trh">S\'entraîner <small>sur les chapitres cochés, ne compte pas pour le classement</small></h4>'+
+    '<p>Une bonne réponse fait revenir la question plus tard (1, 3, 7, 21 puis 60 jours) ; une erreur la fait revenir tout de suite. Une question est « sue » après trois bonnes réponses espacées.</p>'+
     '<div class="stats"><span class="stat"><b>'+due+'</b>à revoir aujourd\'hui</span><span class="stat"><b>'+nw+'</b>jamais vues</span><span class="stat"><b>'+S.bp+'</b>bons points</span></div>'+
     '<div class="tiles">'+PARTS.map(pt=>{
       const s=stat(idsOfPart(pt.k)), pr=s.tot?Math.round(s.mas/s.tot*100):0, on=subsOf(pt.k).some(x=>S.c.includes(x));
@@ -139,10 +142,10 @@ function home(){
         '<div class="et"><div class="tn">'+pt.n+'</div><div class="td">'+pt.d+'</div></div>'+
         '<div class="tp">'+pr+' %</div><div class="tq">'+s.mas+' sues sur '+s.tot+'</div></button>';
     }).join("")+'</div>'+
-    '<div class="avail">'+(p.length?p.length+' question'+(p.length>1?'s':'')+' dans le chapeau, interro de '+Math.min(p.length,S.len):'Rien à revoir pour l\'instant : bravo ! Désactive « seulement ce qui est à revoir » pour t\'entraîner quand même.')+'</div>'+
-    '<div class="btns"><button class="btn" onclick="start(\'interro\')"'+(p.length?'':' disabled')+'>Sortez une feuille !</button>'+
+    '<div class="avail">'+(p.length?p.length+' question'+(p.length>1?'s':'')+' dans le chapeau, entraînement de '+Math.min(p.length,S.len):'Rien à revoir pour l\'instant : bravo ! Désactive « seulement ce qui est à revoir » pour t\'entraîner quand même.')+'</div>'+
+    '<div class="btns"><button class="btn ghost" onclick="start(\'interro\')"'+(p.length?'':' disabled')+'>Entraînement QCM</button>'+
     '<button class="btn ghost" onclick="start(\'libre\')"'+(p.length?'':' disabled')+'>Réponse libre</button></div>'+
-    '<div class="defi"><div class="dt"><h4>Le défi du jour</h4><p>10 questions tirées au sort chaque jour, tous chapitres confondus. Reviens chaque jour pour allonger ta série.</p></div>'+
+    '<div class="defi"><div class="dt"><h4>Le défi du jour</h4><p>10 questions tirées au sort chaque jour, tous chapitres confondus. Reviens chaque jour pour allonger ta série. Entraînement, ne compte pas pour le classement.</p></div>'+
     '<div class="fl">'+(streakAlive&&S.dj.streak?'Série : '+S.dj.streak+' jour'+(S.dj.streak>1?'s':''):'Pas de série en cours')+'</div>'+
     (defiDone()?'<span class="stat">Fait aujourd\'hui : <b>'+fr(S.dj.note)+'</b>/20</span>':'<button class="btn" onclick="start(\'defi\')">Relever le défi</button>')+'</div>'+
     '</div>';
@@ -174,6 +177,7 @@ function mk(list){
 function start(mode){
   let list;
   if(mode==="defi"){ const r=seeded("defi-"+today()); list=shuffle(BANK,r).slice(0,10); }
+  else if(mode==="eval"){ list=shuffle(BANK).slice(0,S.len); }
   else { const p=pool(); if(!p.length){ home(); return; } list=order(p).slice(0,S.len); list=shuffle(list); }
   session={mode,qs:mk(list),i:0,ok:0,streak:0,best:0,done:[],by:{},left:20};
   view="quiz"; renderRail();
@@ -187,10 +191,10 @@ function startMissed(){
 }
 function head(q){
   const st=session, k=q.t[0];
-  const lab=st.mode==="defi"?"Défi du jour, ":"";
+  const lab={defi:"Défi du jour, ",eval:"Évaluation, ",interro:"Entraînement, ",libre:"Réponse libre, "}[st.mode]||"";
   return '<div class="q-top"><span class="tag">'+lab+PNAME[k]+', '+esc(SUB[q.t])+'<span class="lv">'+STARS[q.lv]+'</span></span>'+
    '<div class="meters"><span>Question '+(st.i+1)+' sur '+st.qs.length+'</span><span class="bons" id="bons">'+bpText(st.ok)+'</span>'+
-   (S.ch&&st.mode!=="libre"?'<span class="clock" id="clk">20</span>':'')+'</div></div>'+
+   ((S.ch||st.mode==="eval")&&st.mode!=="libre"?'<span class="clock" id="clk">20</span>':'')+'</div></div>'+
    '<div class="bar"><i style="width:'+(100*st.i/st.qs.length)+'%"></i></div>'+
    '<div class="q">'+esc(q.q)+'</div>';
 }
@@ -203,7 +207,7 @@ function tools(q){
 }
 function ask(){
   const st=session, q=st.qs[st.i];
-  clearInterval(tick); st.left=20; st.answered=false;
+  clearInterval(tick); st.left=20; st.answered=false; st.deadline=0;
   document.getElementById("stage").innerHTML=
    '<div class="sheet seyes" id="card" style="--pc:'+PC[q.t[0]]+'">'+head(q)+'<div class="opts" id="opts">'+
    q.opts.map((o,j)=>'<button class="opt" data-k="'+j+'" onclick="answer('+j+')"><span class="ltr">'+"ABCD"[j]+'</span><span>'+esc(o.t)+'</span></button>').join("")+
@@ -211,17 +215,24 @@ function ask(){
    '<div class="nav"><span class="kb"><kbd>1</kbd> à <kbd>4</kbd> pour répondre, <kbd>Entrée</kbd> pour avancer</span>'+
    '<button class="btn" id="nx" onclick="next()" disabled>Suivante</button></div>'+
    '<div id="tl" style="margin-top:14px;display:none">'+tools(q)+'</div></div>';
-  if(S.ch) startClock();
+  if(S.ch||st.mode==="eval") startClock();
 }
+/* Chrono basé sur l'heure réelle : il ne se met pas en pause si on quitte l'app
+   (téléphone verrouillé, passage sur une autre appli pour chercher la réponse). */
 function startClock(){
   const el=document.getElementById("clk"); if(!el) return;
-  tick=setInterval(()=>{
-    if(!session||session.answered) return;
-    session.left--; el.textContent=session.left;
-    el.className="clock"+(session.left<=5?" hot":session.left<=10?" warn":"");
-    if(session.left<=0){ clearInterval(tick); answer(-1); }
-  },1000);
+  const st=session; st.deadline=Date.now()+20000;
+  const step=()=>{
+    if(!session||session!==st||st.answered){ clearInterval(tick); return; }
+    const left=Math.max(0,Math.ceil((st.deadline-Date.now())/1000));
+    if(left!==st.left){ st.left=left; el.textContent=left; el.className="clock"+(left<=5?" hot":left<=10?" warn":""); }
+    if(left<=0){ clearInterval(tick); answer(-1); }
+  };
+  tick=setInterval(step,250);
 }
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"&&session&&!session.answered&&session.deadline&&Date.now()>=session.deadline){ clearInterval(tick); answer(-1); }
+});
 const BRAVO=["Bravo !","Très bien !","Parfait !","Bien vu !","Excellent !"], OUPS=["Raté !","Oups !","À revoir !","Presque !"];
 function record(q,good){
   const st=session;
@@ -233,6 +244,7 @@ function record(q,good){
 function answer(k){
   const st=session; if(!st||st.answered) return;
   st.answered=true; clearInterval(tick);
+  if(k>=0&&st.deadline&&Date.now()>st.deadline+300) k=-1;   // réponse arrivée après la fin du chrono : comptée fausse
   const q=st.qs[st.i], good=k>=0&&q.opts[k].ok;
   document.querySelectorAll("#opts .opt").forEach(b=>{
     b.disabled=true; const j=+b.dataset.k;
@@ -311,7 +323,7 @@ function result(){
    (imgs.length?'<div class="gain">Nouvelle image'+(imgs.length>1?'s':'')+' !</div><div class="gal" style="max-width:420px;margin:8px auto 0">'+imgs.map(i=>'<div class="img new"><span class="e">'+i[0]+'</span>'+esc(i[1])+'</div>').join("")+'</div>':'')+
    '<div class="recap">'+rows.slice().sort((a,b)=>b.tot-a.tot).map(x=>
      '<div class="l"><span class="n">'+esc(SUB[x.n])+'</span><span class="m"><i data-w="'+Math.round(x.r*100)+'" style="width:0;background:'+PC[x.n[0]]+'"></i></span><span class="s">'+x.ok+'/'+x.tot+'</span></div>').join("")+'</div>'+
-   '<div class="acts"><button class="btn" onclick="start(\'interro\')">Nouvelle interro</button>'+
+   '<div class="acts"><button class="btn" onclick="start(\''+(st.mode==="eval"?"eval":st.mode==="libre"?"libre":"interro")+'\')">'+(st.mode==="eval"?"Nouvelle évaluation":"Nouvel entraînement")+'</button>'+
    (Object.values(S.L).some(e=>e[0]===0)?'<button class="btn ghost" onclick="startMissed()">Refaire les erreurs</button>':'')+
    '<button class="btn ghost" onclick="go(\'home\')">Retour au cahier</button></div>'+
    '<div class="rev"><h3>Ma copie corrigée</h3>'+st.done.map(d=>{
@@ -328,10 +340,17 @@ function flagQ(id){
   const c=prompt("Qu'est-ce qui cloche dans cette question ? (réponse fausse, source douteuse, formulation…)");
   if(c===null) return;
   S.fl[id]={c:c.trim()||"(sans commentaire)",d:Date.now()}; save();
-  const b=document.getElementById("flagbtn"); if(b){ b.classList.add("done"); b.textContent="🚩 Signalée"; }
+  const b=document.getElementById("flagbtn"); if(b){ b.classList.add("done"); b.textContent="🚩 Signalée";
+    b.insertAdjacentHTML("afterend",'<a class="tool" href="'+esc(mailto(flagText([id])))+'">✉️ Envoyer par e-mail</a>'); }
 }
-function flagText(){
-  return Object.entries(S.fl).map(([id,f],i)=>{const q=BYID[id]; if(!q) return "";
+/* Partage des signalements par e-mail (ouvre la messagerie du téléphone, rien n'est envoyé sans l'utilisateur) */
+const MAIL_SIGNAL="jocesou@orange.fr";
+function mailto(body){
+  const n=(body.match(/^\d+\. /gm)||[]).length;
+  return "mailto:"+MAIL_SIGNAL+"?subject="+encodeURIComponent("Culture Bar : "+(n>1?n+" signalements":"signalement"))+"&body="+encodeURIComponent(body+"\n\nEnvoyé depuis Culture Bar, le cahier.");
+}
+function flagText(only){
+  return Object.entries(S.fl).filter(([id])=>!only||only.includes(id)).map(([id,f],i)=>{const q=BYID[id]; if(!q) return "";
     return (i+1)+". ["+id+"] "+q.q+"\n   Réponse enregistrée : "+q.o[q.r]+"\n   Réf. : "+q.s+"\n   Remarque : "+f.c;}).join("\n\n");
 }
 function copyText(t,btn){ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{btn.textContent="Copié !";},()=>{prompt("Copie ce texte :",t);}); }
@@ -442,7 +461,7 @@ function renderBulletin(){
       pts.map((h,i)=>'<circle cx="'+X(i)+'" cy="'+Y(h.n)+'" r="4.5" fill="'+(h.n>=10?"#1E9E5A":"#D93A46")+'" stroke="#1D2433" stroke-width="1.5"><title>'+fmtDate(h.d)+' : '+fr(h.n)+'/20</title></circle>').join("")+
       '<text x="'+pl+'" y="'+(H-6)+'" font-size="11" fill="#5C6270" font-family="Lexend">'+fmtDate(pts[0].d)+'</text><text x="'+(W-pr)+'" y="'+(H-6)+'" font-size="11" text-anchor="end" fill="#5C6270" font-family="Lexend">'+fmtDate(pts[pts.length-1].d)+'</text></svg></div>';
   }
-  const MODEN={interro:"Interro",defi:"Défi du jour",libre:"Réponse libre",frise:"La frise",relier:"Relier"};
+  const MODEN={eval:"Évaluation",interro:"Entraînement",defi:"Défi du jour",libre:"Réponse libre",frise:"La frise",relier:"Relier"};
   const fls=Object.entries(S.fl);
   document.getElementById("stage").innerHTML='<div class="sheet seyes">'+
    '<div class="bh">Bulletin de Jocelyn</div><div class="bsub">Culture Bar, année '+new Date().getFullYear()+'</div>'+
@@ -462,8 +481,9 @@ function renderBulletin(){
    '<div class="gal">'+IMAGES.map((im,i)=>i<unlocked?'<div class="img"><span class="e">'+im[0]+'</span>'+esc(im[1])+'</div>':'<div class="img lock"><span class="e">'+im[0]+'</span>'+((i+1)*10)+' bons points</div>').join("")+'</div>'+
    '<div class="bsec">Mes signalements<small>'+fls.length+' question'+(fls.length>1?'s':'')+' à faire vérifier</small></div>'+
    (fls.length?fls.map(([id,f])=>{const qq=BYID[id]; return qq?'<div class="flag"><button class="tool" onclick="unflag(\''+id+'\')">Retirer</button><b>'+esc(qq.q)+'</b><div>Réponse : '+esc(qq.o[qq.r])+'</div><div class="c">'+esc(f.c)+'</div><div class="d">'+fmtDate(f.d)+', réf. : '+esc(qq.s)+'</div></div>':"";}).join("")+
-     '<div class="btns"><button class="btn ghost" onclick="copyText(flagText(),this)">Copier la liste</button><button class="btn ghost" onclick="download(\'culture-bar-signalements-\'+today()+\'.txt\',flagText())">Télécharger (.txt)</button></div>'
+     '<div class="btns"><a class="btn" href="'+esc(mailto(flagText()))+'">✉️ Envoyer par e-mail</a><button class="btn ghost" onclick="copyText(flagText(),this)">Copier la liste</button><button class="btn ghost" onclick="download(\'culture-bar-signalements-\'+today()+\'.txt\',flagText())">Télécharger (.txt)</button></div>'
      :'<div class="empty">Aucun signalement. Pendant une interro, le bouton 🚩 sous la correction permet d\'en ajouter.</div>')+
+   (fls.length?'<p class="bsub" style="margin-top:8px">Les signalements sont à envoyer à '+MAIL_SIGNAL+'.</p>':'')+
    '<div class="bsec">Sauvegarde<small>pour passer d\'un appareil à l\'autre</small></div>'+
    '<div class="save"><div class="btns"><button class="btn" onclick="download(\'culture-bar-progression-\'+today()+\'.json\',JSON.stringify(S),\'application/json\')">Télécharger ma progression</button>'+
    '<label class="btn ghost" style="cursor:pointer">Charger un fichier<input type="file" accept=".json,application/json" style="display:none" onchange="importFile(this)"></label></div>'+
