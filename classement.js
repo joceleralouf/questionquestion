@@ -2,7 +2,8 @@
    Culture Bar : prénom et classement partagé (Supabase)
    Module chargé après app.js. Il se branche sur trois fonctions d'app.js :
    go() pour la nouvelle page, result() pour envoyer le score, renderRail()
-   pour afficher le prénom. Le score = nombre de questions sues.
+   pour afficher le prénom, record() pour compter les bonnes réponses.
+   Le score = 1 point par question réussie au moins une fois (maximum = nombre de questions).
    ===================================================================== */
 (function(){
 const PKEY = "culturebar-profil";
@@ -27,7 +28,14 @@ function loadP(){
   saveP();
 }
 function saveP(){ try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch(e){} }
-function sues(){ return BANK.filter(q => isMastered(q.id)).length; }
+/* Questions réussies au moins une fois : gardées dans S.j (donc incluses dans la sauvegarde).
+   Au premier passage, on reprend tout ce qui a déjà été répondu juste (case ≥ 1 de la répétition espacée). */
+function justes(){
+  if (!Array.isArray(S.j)) { S.j = BANK.filter(q => S.L[q.id] && S.L[q.id][0] >= 1).map(q => q.id); save(); }
+  return S.j;
+}
+function addJuste(id){ const j = justes(); if (!j.includes(id)) { j.push(id); save(); } }
+function sues(){ const ids = new Set(justes()); return BANK.filter(q => ids.has(q.id)).length; }
 function cleanName(s){ return String(s || "").replace(/\s+/g, " ").trim().slice(0, 20); }
 
 /* ---------- Supabase ---------- */
@@ -74,7 +82,7 @@ function askName(first){
     '<div class="nb-body seyes"><label for="pn">Comment tu t\'appelles ?</label>'+
     '<input id="pn" maxlength="20" autocomplete="given-name" placeholder="Ton prénom" value="'+esc(P.prenom||"")+'">'+
     '<label class="ck"><input type="checkbox" id="pp" '+(P.public?"checked":"")+'> Apparaître dans le classement partagé</label>'+
-    '<p class="nb-note">Seuls ton prénom et ton nombre de questions sues sont envoyés. Ta progression détaillée reste sur ce téléphone.</p>'+
+    '<p class="nb-note">Seuls ton prénom et ton nombre de points sont envoyés. Ta progression détaillée reste sur ce téléphone.</p>'+
     '<button class="btn" id="pok">C\'est parti !</button></div></div></div>';
   const inp = document.getElementById("pn");
   const ok = () => {
@@ -104,7 +112,7 @@ async function renderClassement(refetch){
   if (!configured()) {
     st.innerHTML = '<div class="sheet seyes"><div class="bh">Tableau d\'honneur</div>'+
       '<div class="empty">Le classement partagé n\'est pas encore branché. Il faut renseigner l\'adresse et la clé Supabase dans config.js.</div>'+
-      '<p class="bsub">En attendant, tu en es à <b>'+sues()+'</b> questions sues sur '+TOTAL+'.</p></div>';
+      '<p class="bsub">En attendant, tu as <b>'+sues()+'</b> points sur '+TOTAL+'.</p></div>';
     return;
   }
   if (refetch || !board) {
@@ -118,10 +126,10 @@ async function renderClassement(refetch){
   const podium = rows.slice(0,3);
   st.innerHTML = '<div class="sheet seyes lb">'+
     '<div class="bh">Tableau d\'honneur</div>'+
-    '<div class="bsub">Classé au nombre de questions sues (3 bonnes réponses espacées), sur '+TOTAL+'. '+(boardAt?'Mis à jour '+ago(boardAt)+'.':'')+'</div>'+
+    '<div class="bsub">1 point par question réussie au moins une fois, '+TOTAL+' points au maximum. '+(boardAt?'Mis à jour '+ago(boardAt)+'.':'')+'</div>'+
     (boardErr ? '<div class="empty">'+esc(boardErr)+'</div>' : '')+
     (!P.public ? '<div class="lb-info">Tu n\'apparais pas dans le classement. <button class="tool" onclick="CB.rename()">Changer</button></div>' :
-      (myRank >= 0 ? '<div class="lb-me">Tu es <b>'+(myRank+1)+'<sup>'+(myRank?"e":"er")+'</sup></b> sur '+rows.length+', avec <b>'+rows[myRank].sues+'</b> questions sues.</div>' :
+      (myRank >= 0 ? '<div class="lb-me">Tu es <b>'+(myRank+1)+'<sup>'+(myRank?"e":"er")+'</sup></b> sur '+rows.length+', avec <b>'+rows[myRank].sues+'</b> point'+(rows[myRank].sues>1?'s':'')+' sur '+TOTAL+'.</div>' :
         '<div class="lb-info">Ton score part à la prochaine synchronisation.</div>'))+
     (podium.length ? '<div class="podium">'+[1,0,2].filter(i => podium[i]).map(i =>
       '<div class="pod p'+(i+1)+(podium[i].id===me?' me':'')+'"><span class="md">'+MED[i]+'</span><span class="pnm">'+esc(podium[i].prenom)+'</span><span class="psc">'+podium[i].sues+'</span><span class="step">'+(i+1)+'</span></div>').join("")+'</div>'
@@ -135,7 +143,8 @@ async function renderClassement(refetch){
 }
 
 /* ---------- Branchements sur app.js ---------- */
-const _go = go, _result = result, _renderRail = renderRail;
+const _go = go, _result = result, _renderRail = renderRail, _record = record;
+record = function(q, good){ _record(q, good); if (good) addJuste(q.id); };
 go = function(v){
   if (v !== "classement") return _go(v);
   closeModal(); clearInterval(tick); session = null; view = "classement";

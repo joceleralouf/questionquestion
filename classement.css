@@ -20,7 +20,7 @@
 .pod.p1 .md{font-size:44px}
 .pod .pnm{font-family:var(--hand);font-size:23px;color:var(--stylo);line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pod .psc{font-size:12.5px;color:var(--mine);margin-bottom:6px}
-.pod .psc::after{content:" sues"}
+.pod .psc::after{content:" pts"}
 .pod .step{width:100%;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:26px;color:#fff;border:2.5px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0;box-shadow:4px 0 0 var(--ink)}
 .pod.p1 .step{height:96px;background:var(--h)}
 .pod.p2 .step{height:70px;background:var(--p)}
