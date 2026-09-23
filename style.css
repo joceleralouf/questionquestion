@@ -373,3 +373,18 @@ table.bt{width:100%;border-collapse:collapse;background:#fff;border:2px solid va
   .exo-pick,.cols{grid-template-columns:1fr}
   .cols .col:last-child{margin-top:4px}
 }
+
+/* Évaluation vs entraînement */
+.evalbox{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#EAF0FC;border:2.5px solid var(--stylo);border-radius:14px;padding:14px 16px;box-shadow:4px 4px 0 var(--stylo);margin:4px 0 26px}
+.evalbox .et2{flex:1;min-width:220px}
+.evalbox h4{font-family:var(--disp);font-size:22px;color:var(--stylo)}
+.evalbox p{margin:2px 0 0;font-size:14px;color:var(--ink);max-width:none}
+.evalbox p b{font-weight:600}
+.trh{font-family:var(--disp);font-size:22px;margin:0 0 4px}
+.trh small{font-family:var(--body);font-size:12.5px;font-weight:300;color:var(--mine);margin-left:6px}
+
+/* Anti-débordement horizontal (téléphone) : les colonnes peuvent rétrécir sous la largeur de leur contenu */
+.app{grid-template-columns:310px minmax(0,1fr)}
+.main,#stage{min-width:0}
+.recap .l .n{min-width:0}
+@media(max-width:880px){ .app{grid-template-columns:minmax(0,1fr)} }
