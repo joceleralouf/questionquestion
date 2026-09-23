@@ -11,6 +11,9 @@ App de révision de culture bar (Histoire, Culture bar, Connaissance produits), 
 - `data/q-*.js` : les questions, un fichier par chapitre (h = Histoire, c = Culture bar, p = Connaissance produits)
 - `data/fiches-*.js` : le cahier de cours, un fichier par matière
 - `data/exos.js` : la frise chronologique et les paires à relier
+- `classement.js`, `classement.css` : le prénom et le classement partagé
+- `config.js` : l'adresse et la clé publique du projet Supabase du classement
+- `supabase.sql` : le script à lancer une fois dans Supabase pour créer la table du classement
 - `sw.js`, `manifest.webmanifest`, `icon-*.png` : installation sur téléphone et hors ligne
 
 Chaque question : `id`, `t` (chapitre), `q` (question), `o` (propositions), `r` (index de la bonne réponse), `e` (explication), `s` (source), `lv` (1 facile, 2 moyen, 3 expert).

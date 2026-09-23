@@ -1,0 +1,39 @@
+/* ---- Prénom et classement ---- */
+.namebox{width:min(460px,100%)}
+.nb-body{padding:18px 20px 20px 28px;display:grid;gap:12px}
+.nb-body label{font-family:var(--disp);font-size:18px;font-weight:600}
+.nb-body input[type=text],.nb-body #pn{width:100%;font-family:var(--hand);font-size:26px;color:var(--stylo);background:#fff;border:2px solid var(--ink);border-radius:10px;padding:6px 12px;outline:none;box-shadow:3px 3px 0 var(--ink)}
+.nb-body #pn:focus{background:#FFFBE0}
+.nb-body #pn.err{border-color:var(--ko);box-shadow:3px 3px 0 var(--ko)}
+.nb-body .ck{display:flex;gap:10px;align-items:center;font-family:var(--body);font-size:14px;font-weight:400}
+.nb-body .ck input{width:18px;height:18px;accent-color:var(--stylo)}
+.nb-note{font-size:12.5px;color:var(--mine)}
+.label .who-row{cursor:pointer}
+.label .who-row .ed{font-size:11px;color:var(--mine);text-decoration:underline;text-underline-offset:2px;background:none;border:none;cursor:pointer;padding:0}
+
+.lb .bsub b{color:var(--ink)}
+.lb-me,.lb-info{display:inline-block;background:#fff;border:2px solid var(--ink);border-radius:12px;padding:8px 14px;box-shadow:3px 3px 0 var(--ink);margin:4px 0 18px;font-size:15px}
+.lb-me b{font-family:var(--hand);font-size:24px;color:var(--ko);font-weight:400}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:14px 0 20px}
+.pod{position:relative;flex:1;max-width:170px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.pod .md{font-size:34px;line-height:1;margin-bottom:4px;animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.pod.p1 .md{font-size:44px}
+.pod .pnm{font-family:var(--hand);font-size:23px;color:var(--stylo);line-height:1.1;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .psc{font-size:12.5px;color:var(--mine);margin-bottom:6px}
+.pod .psc::after{content:" sues"}
+.pod .step{width:100%;display:grid;place-items:center;font-family:var(--disp);font-weight:700;font-size:26px;color:#fff;border:2.5px solid var(--ink);border-bottom:none;border-radius:10px 10px 0 0;box-shadow:4px 0 0 var(--ink)}
+.pod.p1 .step{height:96px;background:var(--h)}
+.pod.p2 .step{height:70px;background:var(--p)}
+.pod.p3 .step{height:52px;background:var(--c)}
+.pod.me .pnm{background:linear-gradient(transparent 55%,var(--fluo) 55%);padding:0 4px}
+.lb-list{list-style:none;display:grid;gap:8px;margin:0}
+.lb-list li{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:8px 12px;box-shadow:2px 2px 0 var(--ink);font-size:14.5px}
+.lb-list li.me{background:#FFFBE0;box-shadow:3px 3px 0 var(--stylo);border-color:var(--stylo)}
+.lb-list .rk{font-family:var(--disp);font-weight:700;min-width:26px}
+.lb-list .nm{flex:1.2;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-list .nm em{font-style:normal;color:var(--stylo);font-size:12px}
+.lb-list .bar2{flex:1;height:8px;background:#EEF1F6;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.lb-list .bar2 i{display:block;height:100%;background:var(--stylo)}
+.lb-list .sc{font-family:var(--hand);font-size:21px;color:var(--ko);min-width:34px;text-align:right}
+.lb-list .ag{font-size:11px;color:var(--mine);min-width:62px;text-align:right}
+@media(max-width:880px){ .lb-list .ag{display:none} .pod .pnm{font-size:19px} }

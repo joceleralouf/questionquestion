@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lexend:wght@300;400;500;600&family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="classement.css">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
 <aside class="rail">
   <div class="label">
     <h1>Culture Bar</h1>
-    <div class="row">Nom :<b>Jocelyn Soubise</b></div>
+    <div class="row who-row" onclick="CB.rename()" title="Changer de prénom">Nom :<b id="who">…</b><button class="ed" aria-label="Changer de prénom">modifier</button></div>
     <div class="row">Cahier :<b id="brand-sub"></b></div>
   </div>
   <div class="ruler-wrap">
@@ -48,6 +49,7 @@
     <button class="chip" data-v="exo" onclick="go('exo')">Exercices</button>
     <button class="chip" data-v="bulletin" onclick="go('bulletin')">Bulletin</button>
     <button class="chip" data-v="fiches" onclick="go('fiches')">Cahier de cours</button>
+    <button class="chip wide" data-v="classement" onclick="go('classement')">🏆 Classement</button>
     <button class="chip erase" onclick="reset()">Effacer le cahier</button>
   </div>
 </aside>
@@ -79,5 +81,7 @@
 <script src="data/fiches-p.js"></script>
 <script src="data/exos.js"></script>
 <script src="app.js"></script>
+<script src="config.js"></script>
+<script src="classement.js"></script>
 </body>
 </html>
