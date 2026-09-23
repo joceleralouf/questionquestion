@@ -1,0 +1,31 @@
+/* ---- Intercalaires (navigation du haut) ---- */
+.tabs{position:sticky;top:0;z-index:30;display:flex;align-items:flex-end;gap:6px;padding:12px 18px 0 64px;margin:-12px 0 -2px;
+  background:linear-gradient(var(--desk) 78%,rgba(233,238,245,0))}
+.tab{--tc:var(--stylo);--tt:#fff;position:relative;border:2.5px solid var(--ink);border-bottom:none;border-radius:12px 12px 0 0;
+  background:color-mix(in srgb,var(--tc) 38%,#fff);color:var(--ink);font-family:var(--disp);font-weight:600;font-size:16px;line-height:1.1;
+  padding:9px 16px 10px;cursor:pointer;transform:translateY(7px);transition:transform .15s,background .15s,padding .15s;white-space:nowrap}
+.tab:hover{transform:translateY(3px);background:color-mix(in srgb,var(--tc) 60%,#fff)}
+.tab.cur{background:var(--tc);color:var(--tt);transform:none;padding-bottom:14px;z-index:2;box-shadow:3px -1px 0 rgba(29,36,51,.18)}
+.tab.cur::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:4px;background:var(--tc)}
+.tab .sm{display:none}
+.tab.t-home{--tc:var(--stylo)}
+.tab.t-exo{--tc:var(--c)}
+.tab.t-bulletin{--tc:var(--h)}
+.tab.t-fiches{--tc:var(--p)}
+.tab.t-classement{--tc:var(--fluo);--tt:var(--ink);margin-left:auto}
+#stage > .sheet:first-child{border-top-left-radius:4px}
+.danger{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px;padding-top:10px;border-top:1.5px dotted var(--seyes-2);font-size:12.5px;color:var(--mine)}
+.danger .tool{border-color:var(--ko);color:var(--ko);box-shadow:2px 2px 0 var(--ko)}
+.danger .tool:hover{background:#FDECEE}
+
+@media(max-width:880px){
+  .tabs{position:fixed;top:0;left:0;right:0;margin:0;padding:calc(env(safe-area-inset-top,0px) + 8px) 8px 0;gap:4px;
+    background:var(--desk);border-bottom:2.5px solid var(--ink);box-shadow:0 4px 10px rgba(29,36,51,.12)}
+  .tab{flex:1;min-width:0;text-align:center;font-size:13.5px;padding:8px 2px 8px;transform:translateY(3px)}
+  .tab.cur{padding-bottom:10px}
+  .tab.cur::after{display:none}
+  .tab.t-classement{margin-left:0;flex:.7}
+  .tab .lg{display:none}
+  .tab .sm{display:inline}
+  .app{padding-top:50px}
+}

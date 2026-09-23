@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lexend:wght@300;400;500;600&family=Patrick+Hand&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="classement.css">
+<link rel="stylesheet" href="onglets.css">
 </head>
 
 <body>
@@ -44,16 +45,17 @@
   <div class="row-tog"><span class="t">Chrono de 20 s</span><button class="sw" id="sw-chrono" aria-label="Chrono" onclick="toggle('ch')"><i></i></button></div>
   <div class="row-tog"><span class="t">Seulement ce qui est à revoir</span><button class="sw" id="sw-due" aria-label="Seulement ce qui est à revoir" onclick="toggle('dueOnly')"><i></i></button></div>
   <div class="row-tog"><span class="t">Passer seul si c'est juste</span><button class="sw" id="sw-auto" aria-label="Avance automatique" onclick="toggle('an')"><i></i></button></div>
-  <div class="nav-rail">
-    <button class="chip" data-v="home" onclick="go('home')">Interro</button>
-    <button class="chip" data-v="exo" onclick="go('exo')">Exercices</button>
-    <button class="chip" data-v="bulletin" onclick="go('bulletin')">Bulletin</button>
-    <button class="chip" data-v="fiches" onclick="go('fiches')">Cahier de cours</button>
-    <button class="chip wide" data-v="classement" onclick="go('classement')">🏆 Classement</button>
-    <button class="chip erase" onclick="reset()">Effacer le cahier</button>
-  </div>
 </aside>
-<main class="main" id="stage"></main>
+<main class="main">
+  <nav class="tabs" aria-label="Sections du cahier">
+    <button class="tab t-home" data-v="home" onclick="go('home')"><span class="lg">Interro</span><span class="sm">Interro</span></button>
+    <button class="tab t-exo" data-v="exo" onclick="go('exo')"><span class="lg">Exercices</span><span class="sm">Exos</span></button>
+    <button class="tab t-bulletin" data-v="bulletin" onclick="go('bulletin')"><span class="lg">Bulletin</span><span class="sm">Bulletin</span></button>
+    <button class="tab t-fiches" data-v="fiches" onclick="go('fiches')"><span class="lg">Cahier de cours</span><span class="sm">Cours</span></button>
+    <button class="tab t-classement" data-v="classement" onclick="go('classement')"><span class="lg">🏆 Classement</span><span class="sm">🏆</span></button>
+  </nav>
+  <div id="stage"></div>
+</main>
 </div>
 <div id="modal"></div>
 
@@ -83,5 +85,6 @@
 <script src="app.js"></script>
 <script src="config.js"></script>
 <script src="classement.js"></script>
+<script src="onglets.js"></script>
 </body>
 </html>
